@@ -1,7 +1,11 @@
 {
+<<<<<<< Updated upstream
 <<<<<<< HEAD
   "version": "2.2.11"
 =======
   "version": "2.2.12"
 >>>>>>> 65c21fa84a49992083142bf769df7ecd4640826c
+=======
+  "version": "2.2.13"
+>>>>>>> Stashed changes
 }
