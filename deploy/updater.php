@@ -11,15 +11,7 @@ function wpme_gravity_forms_get_github_version(){
 
   $response = json_decode(wp_remote_retrieve_body(
     wp_remote_get(
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-      'https://raw.githubusercontent.com/genoo-source/wp-gravity-forms-extension/master/version.json'
-=======
       'https://raw.githubusercontent.com/Ragapriyaait/wp-gravity-forms-extension/main/version.json'
->>>>>>> 65c21fa84a49992083142bf769df7ecd4640826c
-=======
-      'https://raw.githubusercontent.com/Ragapriyaait/wp-gravity-forms-extension/main/version.json'
->>>>>>> Stashed changes
     )
   ), true);
   if(!is_array($response) || !array_key_exists('version', $response)){
@@ -34,15 +26,7 @@ function wpme_gravity_forms_get_github_version(){
  */
 
 function wpme_gravity_forms_updater_init($file){
-<<<<<<< Updated upstream
-<<<<<<< HEAD
- $GLOBALS['wpme_gravity_downloadLink'] = 'https://github.com/genoo-source/wp-gravity-forms-extension/archive/master.zip';
-=======
  $GLOBALS['wpme_gravity_downloadLink'] = 'https://github.com/Ragapriyaait/wp-gravity-forms-extension/archive/main.zip';
->>>>>>> 65c21fa84a49992083142bf769df7ecd4640826c
-=======
- $GLOBALS['wpme_gravity_downloadLink'] = 'https://github.com/Ragapriyaait/wp-gravity-forms-extension/archive/main.zip';
->>>>>>> Stashed changes
   $GLOBALS['wpme_gravity_plugin'] = null;
   $GLOBALS['wpme_gravity_basename'] = null;
   $GLOBALS['wpme_gravity_active'] = null;
