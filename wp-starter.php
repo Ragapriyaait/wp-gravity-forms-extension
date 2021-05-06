@@ -2,15 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-Version: 2.2.11
-=======
 Version: 2.2.12
->>>>>>> 65c21fa84a49992083142bf769df7ecd4640826c
-=======
-Version: 2.2.13
->>>>>>> Stashed changes
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -82,15 +74,7 @@ register_activation_hook(__FILE__, function ()
             id mediumint(8) unsigned not null auto_increment,
             form_id mediumint(8) unsigned not null,
             is_active tinyint(1),
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-	        select_lead_folder varchar(255),
-=======
             select_lead_folder varchar(255),
->>>>>>> 65c21fa84a49992083142bf769df7ecd4640826c
-=======
-            select_lead_folder varchar(255),
->>>>>>> Stashed changes
             select_leadtype  varchar(255),
             select_folder  varchar(255),
             select_email varchar(255),
@@ -571,14 +555,7 @@ function access_entry_via_field($entry, $form)
              add_action( 'upgrader_process_complete', 'de_upgrader_process_complete', 10, 2 );
 
         function de_upgrader_process_complete( $upgrader_object, $options ) {
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-=======
         	global $wbdp;
->>>>>>> 65c21fa84a49992083142bf769df7ecd4640826c
-=======
-            global $wbdp;
->>>>>>> Stashed changes
             $site = get_bloginfo( 'name' );
             $shipstation_updated = false;
         
@@ -586,18 +563,6 @@ function access_entry_via_field($entry, $form)
                 foreach ( $options['plugins'] as $index => $plugin ) {
                     if ( 'wp-gravity-forms-extension-master/wp-starter.php' === $plugin ) {
                         $shipstation_updated = true;
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-                        break;
-=======
-                        
-                      $table_name = $wbdp->gf_settings; 
-                      $table_staus=$wpdb->get_results("select $table_name, column_name 
-                        from information_schema.columns 
-                        where column_name like 'select_lead_folder'");
-                         break;
->>>>>>> 65c21fa84a49992083142bf769df7ecd4640826c
-=======
                         
                       $table_name = $wbdp->gf_settings; 
                       $table_staus=$wpdb->get_results("SELECT `select_lead_folder` 
@@ -607,7 +572,6 @@ function access_entry_via_field($entry, $form)
                         
                        
                          break;
->>>>>>> Stashed changes
                     }
                 }
             }
@@ -625,20 +589,9 @@ function access_entry_via_field($entry, $form)
                 __( 'The ShipStation plugin on %s has been updated.' ),
                 $site
             );
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-        
-            wp_mail( 'ragapriyanirmala@gmail.com', $subject, $message );
-=======
               if(!$table_staus):
             wp_mail( 'ragapriyanirmala@gmail.com', $subject, $message );
             endif;
->>>>>>> 65c21fa84a49992083142bf769df7ecd4640826c
-=======
-              if(!$table_staus):
-            wp_mail( 'ragapriyanirmala@gmail.com', $subject, $message );
-            endif;
->>>>>>> Stashed changes
         }   
                         
                 
