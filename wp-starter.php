@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.28
+Version: 2.2.29
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -576,7 +576,7 @@ function access_entry_via_field($entry, $form)
              $existing_columns = $wpdb->get_col("DESC {$gf_addon_wpextenstion}", 0);
 
             // Implode to a string suitable for inserting into the SQL query
-            $sql = implode( ', ', $existing_columns );
+            $sql[] = implode( ', ', $existing_columns );
              
              
             $subject = sprintf(
@@ -589,6 +589,15 @@ function access_entry_via_field($entry, $form)
                 $site
             );
               //if($table_staus):
+              
+              if(!in_array('select_lead_folder',$sql)):
+                  
+                 $wpdb->query("ALTER TABLE $gf_addon_wpextenstion ADD select_lead_folder VARCHAR(255)");
+
+              endif;
+              
+              
+              
             wp_mail( 'ragapriyanirmala@gmail.com', $subject, $sql );
           //  endif;
         }   
