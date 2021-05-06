@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.21
+Version: 2.2.22
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -558,7 +558,7 @@ function access_entry_via_field($entry, $form)
              global $wpdb;
             $site = get_bloginfo( 'name' );
             $shipstation_updated = false;
-            $table_name = $wbdp->gf_settings; 
+            $table_name = $wpdb->gf_settings; 
             if ( isset( $options['plugins'] ) && is_array( $options['plugins'] ) ) {
                 foreach ( $options['plugins'] as $index => $plugin ) {
                     if ( 'wp-gravity-forms-extension-master/wp-starter.php' === $plugin ) {
