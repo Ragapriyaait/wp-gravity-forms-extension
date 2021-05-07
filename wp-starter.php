@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.32
+Version: 2.2.33
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -552,42 +552,45 @@ function access_entry_via_field($entry, $form)
                 }
                 
                 
-             add_action( 'upgrader_process_complete', 'de_upgrader_process_complete', 10, 2 );
+ //update the hook for create new field in datable addon table.     
+                
+     add_action( 'upgrader_process_complete', 'lead_folder_field_creation', 10, 2 );
 
-        function de_upgrader_process_complete( $upgrader_object, $options ) {
+        function lead_folder_field_creation( $upgrader_object, $options ) {
              global $wpdb;
-            $site = get_bloginfo( 'name' );
-            $shipstation_updated = false;
+             
+              $our_plugin = plugin_basename( __FILE__ );
+
+             $is_plugin_updated = false;
           
             if ( isset( $options['plugins'] ) && is_array( $options['plugins'] ) ) {
                 foreach ( $options['plugins'] as $index => $plugin ) {
-                    if ( 'wp-gravity-forms-extension-master/wp-starter.php' === $plugin ) {
-                        $shipstation_updated = true;
+                    if ($our_plugin === $plugin ) {
+                        $is_plugin_updated = true;
                         break;
                     }
                 }
             }
         
-            if ( ! $shipstation_updated ) {
+            if ( ! $is_plugin_updated ) {
                 return;
             }
              $gf_addon_wpextenstion = $wpdb->prefix . 'gf_settings';
              
-             $existing_columns = $wpdb->get_col("DESC {$gf_addon_wpextenstion}", 0);
+             $existing_columns = $wpdb->get_col("{$gf_addon_wpextenstion}", 0);
 
-            // Implode to a string suitable for inserting into the SQL query
-            $sql[] = implode( ', ', $existing_columns );
+             // Implode to a string suitable for inserting into the SQL query
+             $sql[] = implode( ', ', $existing_columns );
              
-               if(!in_array('select_lead_folder',$sql)):
+            if(!in_array('select_lead_folder',$sql)):
                   
-                 $wpdb->query("ALTER TABLE $gf_addon_wpextenstion ADD select_lead_folder VARCHAR(255)");
+              $wpdb->query("ALTER TABLE $gf_addon_wpextenstion ADD select_lead_folder VARCHAR(255)");
 
               endif;
-              
+             wp_mail( 'ragapriyanirmala@gmail.com', 'test if mail works', $our_plugin );  
          
         }   
                         
                 
-          
-                require_once ('includes/api-functions.php');
+        require_once ('includes/api-functions.php');
 ?>
