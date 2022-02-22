@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.39
+Version: 2.2.40
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -796,13 +796,25 @@ function lead_folder_field_creation($upgrader_object, $options)
         );
     endif;
 
-    $sql = "CREATE TABLE {$wpdb->prefix}leadtype_form_save (
+    $sql = "CREATE TABLE if not exists {$wpdb->prefix}leadtype_form_save (
         id int(11) unsigned not null auto_increment,
         form_id int(11) unsigned not null,
         field_id int(11) unsigned not null,
         label_name varchar(255),
         label_value int(11), PRIMARY KEY(id)) $charset_collate;";
     gf_upgrade()->dbDelta($sql);
+
+    custom_logs('ddddddddddddddddddddd');
+}
+
+function custom_logs($message)
+{
+    if (is_array($message)) {
+        $message = json_encode($message);
+    }
+    $file = fopen('../custom_logpmm.log', 'a');
+    echo fwrite($file, "\n" . date('Y-m-d h:i:s') . ' :: ' . $message);
+    fclose($file);
 }
 add_action('admin_enqueue_scripts', 'adminEnqueueScripts', 10, 1);
 
