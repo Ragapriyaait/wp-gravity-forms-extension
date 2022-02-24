@@ -12,7 +12,7 @@ Description: This plugin requires the WPMKtgEngine or Genoo plugin installed bef
 
 
 
-Version: 2.2.43
+Version: 2.2.44
 
 
 
@@ -1406,38 +1406,6 @@ function lead_folder_field_creation($upgrader_object, $options)
     if (!$is_plugin_updated) {
         return;
     }
-}
-
-add_filter(
-    'upgrader_pre_install',
-    'deactivate_plugin_before_upgrade_callback',
-    10,
-    2
-);
-function deactivate_plugin_before_upgrade_callback($return, $plugin)
-{
-    if (is_wp_error($return)) {
-        //Bypass.
-        return $return;
-    }
-
-    // When in cron (background updates) don't deactivate the plugin, as we require a browser to reactivate it
-    if (wp_doing_cron()) {
-        return $return;
-    }
-
-    $plugin = isset($plugin['plugin']) ? $plugin['plugin'] : '';
-    if (empty($plugin)) {
-        return new WP_Error('bad_request', $this->strings['bad_request']);
-    }
-
-    if (is_plugin_active($plugin)) {
-        //You can play with plugin zip download over here
-        //Deactivate the plugin silently, Prevent deactivation hooks from running.
-        deactivate_plugins($plugin, true);
-    }
-
-    return $return;
 }
 
 add_action('admin_enqueue_scripts', 'adminEnqueueScripts', 10, 1);
