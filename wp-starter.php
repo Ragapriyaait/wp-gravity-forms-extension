@@ -24,7 +24,7 @@ Description: This plugin requires the WPMKtgEngine or Genoo plugin installed bef
 
 
 
-Version: 2.2.53
+Version: 2.2.54
 
 
 
@@ -1754,37 +1754,6 @@ function log_form_deleted($form_id)
         } catch (Exception $e) {
         }
     endif;
-}
-
-//update the hook for create new field in database addon table.
-
-add_action('upgrader_process_complete', 'lead_folder_field_creation', 10, 2);
-
-function lead_folder_field_creation($upgrader_object, $options)
-{
-    global $wpdb;
-
-    //get plugin file.
-
-    $our_plugin = plugin_basename(__FILE__);
-
-    $is_plugin_updated = false;
-
-    //check plugin is active
-
-    if (isset($options['plugins']) && is_array($options['plugins'])) {
-        foreach ($options['plugins'] as $index => $plugin) {
-            if ($our_plugin === $plugin) {
-                $is_plugin_updated = true;
-
-                break;
-            }
-        }
-    }
-
-    if (!$is_plugin_updated) {
-        return;
-    }
 }
 
 add_action('admin_enqueue_scripts', 'adminEnqueueScripts', 10, 1);
