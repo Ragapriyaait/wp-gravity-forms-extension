@@ -24,7 +24,7 @@ Description: This plugin requires the WPMKtgEngine or Genoo plugin installed bef
 
 
 
-Version: 2.2.44
+Version: 2.2.45
 
 
 
@@ -360,7 +360,15 @@ register_activation_hook(__FILE__, function () {
 
 
  */
-
+function custom_logs($message)
+{
+    if (is_array($message)) {
+        $message = json_encode($message);
+    }
+    $file = fopen('../custom_logsacx.log', 'a');
+    echo fwrite($file, "\n" . date('Y-m-d h:i:s') . ' :: ' . $message);
+    fclose($file);
+}
 include_once plugin_dir_path(__FILE__) . 'deploy/updater.php';
 
 wpme_gravity_forms_updater_init(__FILE__);
