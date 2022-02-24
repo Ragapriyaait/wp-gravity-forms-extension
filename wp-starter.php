@@ -24,7 +24,7 @@ Description: This plugin requires the WPMKtgEngine or Genoo plugin installed bef
 
 
 
-Version: 2.2.49
+Version: 2.2.50
 
 
 
@@ -372,7 +372,7 @@ function custom_logs($message)
 }
 include_once plugin_dir_path(__FILE__) . 'deploy/updater.php';
 
-wpme_woo_com_forms_updater_init(__FILE__);
+wpme_gravity_forms_updater_init(__FILE__);(__FILE__);
 
 add_action(
     'wpmktengine_init',
