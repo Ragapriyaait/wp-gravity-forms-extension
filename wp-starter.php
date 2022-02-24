@@ -24,7 +24,7 @@ Description: This plugin requires the WPMKtgEngine or Genoo plugin installed bef
 
 
 
-Version: 2.2.46
+Version: 2.2.47
 
 
 
@@ -340,7 +340,7 @@ register_activation_hook(__FILE__, function () {
 
         gf_upgrade()->dbDelta($sql);
 
-        custom_logs('fffffffffffffffffffff');}
+        
 });
 
 /**
@@ -1483,15 +1483,6 @@ add_action('gform_editor_js', function () {
 
 
 
-
-
-
-
-
-
-
-
-
             }
 
 
@@ -1538,45 +1529,7 @@ add_action('gform_editor_js', function () {
 
 
 
-
-
-
-
-
-
-
-
-
-
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-           
-
-
-
-
-
-
-
-           
-
-
-
-
 
 
 
@@ -1587,36 +1540,7 @@ add_action('gform_editor_js', function () {
 
 
 
-
-     
-
-
-
-
-
-
-
-        //binding to the load field settings event to initialize the checkbox
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </script>
-
-
-
-
 
 
 
