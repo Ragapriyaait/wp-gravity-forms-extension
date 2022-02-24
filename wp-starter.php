@@ -24,7 +24,7 @@ Description: This plugin requires the WPMKtgEngine or Genoo plugin installed bef
 
 
 
-Version: 2.2.47
+Version: 2.2.48
 
 
 
