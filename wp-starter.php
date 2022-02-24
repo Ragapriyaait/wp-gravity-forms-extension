@@ -4,7 +4,15 @@
 
 
 
+
+
+
+
 Plugin Name: Gravity Forms WPMktgEngine Extension
+
+
+
+
 
 
 
@@ -12,7 +20,15 @@ Description: This plugin requires the WPMKtgEngine or Genoo plugin installed bef
 
 
 
+
+
+
+
 Version: 2.2.44
+
+
+
+
 
 
 
@@ -20,7 +36,15 @@ Requires PHP: 7.1
 
 
 
+
+
+
+
 Author: Genoo LLC
+
+
+
+
 
 
 
@@ -30,7 +54,15 @@ Author: Genoo LLC
 
 
 
+
+
+
+
     Copyright 2015  WPMKTENGINE, LLC  (web : http://www.genoo.com/)
+
+
+
+
 
 
 
@@ -38,7 +70,15 @@ Author: Genoo LLC
 
 
 
+
+
+
+
     it under the terms of the GNU General Public License, version 2, as
+
+
+
+
 
 
 
@@ -46,7 +86,15 @@ Author: Genoo LLC
 
 
 
+
+
+
+
     This program is distributed in the hope that it will be useful,
+
+
+
+
 
 
 
@@ -54,7 +102,15 @@ Author: Genoo LLC
 
 
 
+
+
+
+
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+
+
+
+
 
 
 
@@ -62,7 +118,15 @@ Author: Genoo LLC
 
 
 
+
+
+
+
     You should have received a copy of the GNU General Public License
+
+
+
+
 
 
 
@@ -70,7 +134,15 @@ Author: Genoo LLC
 
 
 
+
+
+
+
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+
+
 
 
 
@@ -136,7 +208,15 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
   <div class="alert">
+
+
+
+
 
 
 
@@ -144,7 +224,15 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
 </div>
+
+
+
+
 
 
 
@@ -164,7 +252,15 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
             id mediumint(8) unsigned not null auto_increment,
+
+
+
+
 
 
 
@@ -172,7 +268,15 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
             is_active tinyint(1),
+
+
+
+
 
 
 
@@ -180,7 +284,15 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
             select_leadtype  varchar(255),
+
+
+
+
 
 
 
@@ -188,7 +300,15 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
             select_email varchar(255),
+
+
+
+
 
 
 
@@ -196,11 +316,23 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
             PRIMARY KEY  (id),
 
 
 
+
+
+
+
             UNIQUE KEY form_id (form_id)
+
+
+
+
 
 
 
@@ -215,7 +347,15 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
  * Plugin Updates
+
+
+
+
 
 
 
@@ -725,11 +865,23 @@ add_action(
 
 
 
+
+
+
+
     <div>
 
 
 
+
+
+
+
         <li class="thirdparty_input_setting field_setting">
+
+
+
+
 
 
 
@@ -739,7 +891,15 @@ add_action(
 
 
 
+
+
+
+
          <select id="field_thirdparty_input" onchange="SetFieldProperty('thirdPartyInput', this.value);" class="fieldwidth-3" >
+
+
+
+
 
 
 
@@ -747,7 +907,15 @@ add_action(
 
 
 
+
+
+
+
             
+
+
+
+
 
 
 
@@ -760,6 +928,10 @@ add_action(
 
 
 
+
+
+
+
                      <option value="<?php echo $customfields->key; ?>"> <?php echo trim(
     $customfields->label
 ); ?></option> <?php endif;
@@ -767,7 +939,15 @@ add_action(
 
 
 
+
+
+
+
        </select>
+
+
+
+
 
 
 
@@ -775,11 +955,23 @@ add_action(
 
 
 
+
+
+
+
             </div>
 
 
 
+
+
+
+
               
+
+
+
+
 
 
 
@@ -802,7 +994,15 @@ add_action(
 
 
 
+
+
+
+
                                       <div class="leadtypecheckbox" style="height:200px;overflow: auto";>
+
+
+
+
 
 
 
@@ -813,7 +1013,15 @@ add_action(
 
 
 
+
+
+
+
                         <li class="encrypt_setting_leadtypes field_setting">
+
+
+
+
 
 
 
@@ -821,11 +1029,23 @@ add_action(
 
 
 
+
+
+
+
                 <input type="checkbox" id="field_encrypt_value<?php echo $i; ?>" name="field_encrypt_value<?php echo $i; ?>" data-id =<?php echo $i; ?> value="<?php echo $leadtypes_optional_values->id; ?>" onclick="SetFieldProperty('encryptField<?php echo $i; ?>', this.value);" />
 
 
 
+
+
+
+
                 <label for="field_encrypt_value<?php echo $i; ?>" class="leadtype_value_label<?php echo $i; ?>" style="display:inline;">
+
+
+
+
 
 
 
@@ -837,11 +1057,23 @@ add_action(
 
 
 
+
+
+
+
                     <?php gform_tooltip('form_field_encrypt_value'); ?>
 
 
 
+
+
+
+
                 </label>  
+
+
+
+
 
 
 
@@ -853,7 +1085,19 @@ add_action(
 
 
 
+
+
+
+
+
+
+
+
                 <input type="text" id="field_id_input_label_text" class="field_id_input_value_text<?php echo $i; ?>" value="<?php echo $leadtypes_optional_values->id; ?>" style="display: none;"/>
+
+
+
+
 
 
 
@@ -861,7 +1105,15 @@ add_action(
 
 
 
+
+
+
+
                      
+
+
+
+
 
 
 
@@ -869,7 +1121,15 @@ add_action(
 
 
 
+
+
+
+
                    </div>
+
+
+
+
 
 
 
@@ -877,7 +1137,15 @@ add_action(
 
 
 
+
+
+
+
                    <div> <button type="button" class="leadtypeupdate" style="display: none;">update</button></div>
+
+
+
+
 
 
 
@@ -889,15 +1157,31 @@ add_action(
 
 
 
-           
 
-
-
-           
 
 
 
            
+
+
+
+
+
+
+
+           
+
+
+
+
+
+
+
+           
+
+
+
+
 
 
 
@@ -906,7 +1190,19 @@ add_action(
 
 
 
+
+
+
+
          
+
+
+
+
+
+
+
+
 
 
 
@@ -1016,11 +1312,23 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
     <script type="text/javascript">
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -1028,7 +1336,15 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
        
+
+
+
+
 
 
 
@@ -1036,7 +1352,15 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
       fieldSettings[type] += ', .thirdparty_input_setting';
+
+
+
+
 
 
 
@@ -1044,11 +1368,23 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
       
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -1056,7 +1392,15 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
     jQuery(document).on("gform_load_field_settings", function(event, field, form) {
+
+
+
+
 
 
 
@@ -1064,7 +1408,15 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -1072,7 +1424,15 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
         
+
+
+
+
 
 
 
@@ -1084,11 +1444,27 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
+
+
+
+
            for (i = 0; i < leadtypescount; i++) {
 
 
 
+
+
+
+
          
+
+
+
+
 
 
 
@@ -1100,7 +1476,19 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
+
+
+
+
             }
+
+
+
+
 
 
 
@@ -1108,7 +1496,15 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
             if(third_party_value!='leadtypes')
+
+
+
+
 
 
 
@@ -1116,7 +1512,15 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
              jQuery('.leadtypecheckbox').css('display','none');   
+
+
+
+
 
 
 
@@ -1128,6 +1532,14 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
+
+
+
+
             }
 
 
@@ -1136,11 +1548,27 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
+
+
+
+
            
 
 
 
+
+
+
+
            
+
+
+
+
 
 
 
@@ -1148,7 +1576,15 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
      
+
+
+
+
 
 
 
@@ -1160,7 +1596,19 @@ add_action('gform_editor_js', function () {
 
 
 
+
+
+
+
+
+
+
+
     </script>
+
+
+
+
 
 
 
@@ -1408,6 +1856,47 @@ function lead_folder_field_creation($upgrader_object, $options)
     }
 }
 
+add_filter(
+    'upgrader_pre_install',
+
+    'deactivate_plugin_before_upgrade_callback',
+
+    10,
+
+    2
+);
+
+function deactivate_plugin_before_upgrade_callback($return, $plugin)
+{
+    if (is_wp_error($return)) {
+        //Bypass.
+
+        return $return;
+    }
+
+    // When in cron (background updates) don't deactivate the plugin, as we require a browser to reactivate it
+
+    if (wp_doing_cron()) {
+        return $return;
+    }
+
+    $plugin = isset($plugin['plugin']) ? $plugin['plugin'] : '';
+
+    if (empty($plugin)) {
+        return new WP_Error('bad_request', $this->strings['bad_request']);
+    }
+
+    if (is_plugin_active($plugin)) {
+        //You can play with plugin zip download over here
+
+        //Deactivate the plugin silently, Prevent deactivation hooks from running.
+
+        deactivate_plugins($plugin, true);
+    }
+
+    return $return;
+}
+
 add_action('admin_enqueue_scripts', 'adminEnqueueScripts', 10, 1);
 
 add_action('wp_ajax_lead_type_option_submit', 'lead_type_option_submit');
@@ -1468,9 +1957,17 @@ function myplugin_ajaxurl()
 
 
 
+
+
+
+
                        var ajaxurl = "' .
         admin_url('admin-ajax.php') .
         '";
+
+
+
+
 
 
 
@@ -1479,6 +1976,10 @@ function myplugin_ajaxurl()
 
 require_once 'includes/api-functions.php';
 ?>
+
+
+
+
 
 
 
