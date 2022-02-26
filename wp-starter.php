@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.18
+Version: 2.2.19
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -89,9 +89,7 @@ add_action('plugins_loaded', 'redirectToUpdatePlugin');
 function redirectToUpdatePlugin()
 {
     if (
-        get_transient('myplugin_updated') &&
-        current_user_can('update_plugins')
-    ) {
+        get_transient('myplugin_updated') {
         custom_logs('update test');
     } // endif;
 } // redirectToUpdatePlugin
