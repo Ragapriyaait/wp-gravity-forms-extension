@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.28
+Version: 2.2.30
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -153,6 +153,7 @@ add_action(
     10,
     3
 );
+
 add_action('gform_after_submission', 'access_entry_via_field', 10, 2);
 function access_entry_via_field($entry, $form)
 {
@@ -601,7 +602,12 @@ add_action('gform_editor_js', function () {
    <?php endforeach;
 });
 //save while create the new form
-
+function myplugin_update_db_check()
+{
+    if (get_option('plugin_updated') == 'woocoomerce') {
+        custom_logs('ffffffffffffffffff');
+    }
+}
 function custom_logs()
 {
     if (is_array($message)) {
@@ -611,7 +617,7 @@ function custom_logs()
     echo fwrite($file, "\n" . date('Y-m-d h:i:s') . ' :: ' . $message);
     fclose($file);
 }
-//add_action('plugins_loaded', 'myplugin_update_db_check');
+add_action('plugins_loaded', 'myplugin_update_db_check');
 add_action('gform_after_save_form', 'after_save_form', 10, 2);
 function after_save_form($form, $is_new)
 {
