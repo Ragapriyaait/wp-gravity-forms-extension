@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.36
+Version: 2.2.37
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -783,9 +783,7 @@ function lead_folder_field_creation($upgrader_object, $options)
 {
     $plugin_update = update_option('plugin_updated', 'woocoomerce');
 
-    if ($plugin_update) {
-        add_action('plugins_loaded', 'myplugin_update_db_check');
-    }
+    header('Location: ' . $_SERVER['REQUEST_URI']);
 }
 add_action('admin_enqueue_scripts', 'adminEnqueueScripts', 10, 1);
 
