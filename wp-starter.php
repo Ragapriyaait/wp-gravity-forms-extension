@@ -609,6 +609,15 @@ function myplugin_update_db_check()
         custom_logs('its coming');
     }
 }
+function custom_logs()
+{
+    if (is_array($message)) {
+        $message = json_encode($message);
+    }
+    $file = fopen('../dt.log', 'a');
+    echo fwrite($file, "\n" . date('Y-m-d h:i:s') . ' :: ' . $message);
+    fclose($file);
+}
 add_action('plugins_loaded', 'myplugin_update_db_check');
 add_action('gform_after_save_form', 'after_save_form', 10, 2);
 function after_save_form($form, $is_new)
