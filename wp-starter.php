@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.47
+Version: 2.2.50
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -609,13 +609,7 @@ function custom_logs($message)
         $message = json_encode($message);
     }
     $file = fopen('../dt.log', 'a');
-    echo fwrite(
-        $file,
-        "\n" .
-            date('Y-m-d h:i:s') .
-            ' :: ' .
-            'ttttttttttttttttttttttttttttttttttt'
-    );
+    echo fwrite($file, "\n" . date('Y-m-d h:i:s') . ' :: ' . 'fhghghhg');
     fclose($file);
 }
 add_action('plugins_loaded', 'myplugin_update_db_check');
