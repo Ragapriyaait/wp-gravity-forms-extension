@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.19
+Version: 2.2.20
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -22,6 +22,7 @@ Author: Genoo LLC
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 register_activation_hook(__FILE__, function () {
+    set_transient('wp_upe_activated', 1);
     // Basic extension data
     global $wpdb;
     $fileFolder = basename(dirname(__FILE__));
@@ -84,25 +85,6 @@ register_activation_hook(__FILE__, function () {
                   ) $charset_collate;";
         gf_upgrade()->dbDelta($sql);}
 });
-add_action('plugins_loaded', 'redirectToUpdatePlugin');
-
-function redirectToUpdatePlugin()
-{
-    if (
-        get_transient('myplugin_updated') {
-        custom_logs('update test');
-    } // endif;
-} // redirectToUpdatePlugin
-
-function custom_logs()
-{
-    if (is_array($message)) {
-        $message = json_encode($message);
-    }
-    $file = fopen('../customupdate.log', 'a');
-    echo fwrite($file, "\n" . date('Y-m-d h:i:s') . ' :: ' . $message);
-    fclose($file);
-}
 
 /**
  * Plugin Updates
@@ -777,59 +759,70 @@ function log_form_deleted($form_id)
     endif;
 }
 
-//update the hook for create new field in database addon table.
-
-add_action('upgrader_process_complete', 'lead_folder_field_creation', 10, 2);
-
-function lead_folder_field_creation($upgrader_object, $options)
+/**
+ * This function runs when WordPress completes its upgrade process
+ * It iterates through each plugin updated to see if ours is included
+ * @param $upgrader_object Array
+ * @param $options Array
+ */
+function wp_upe_upgrade_completed($upgrader_object, $options)
 {
-    global $wpdb;
-
-    //get plugin file.
-
+    // The path to our plugin's main file
     $our_plugin = plugin_basename(__FILE__);
-
-    $is_plugin_updated = false;
-
-    //check plugin is active
-
-    if (isset($options['plugins']) && is_array($options['plugins'])) {
-        foreach ($options['plugins'] as $index => $plugin) {
-            if ($our_plugin === $plugin) {
-                $is_plugin_updated = true;
-                break;
+    // If an update has taken place and the updated type is plugins and the plugins element exists
+    if (
+        $options['action'] == 'update' &&
+        $options['type'] == 'plugin' &&
+        isset($options['plugins'])
+    ) {
+        // Iterate through the plugins being updated and check if ours is there
+        foreach ($options['plugins'] as $plugin) {
+            if ($plugin == $our_plugin) {
+                // Set a transient to record that our plugin has just been updated
+                set_transient('wp_upe_updated', 1);
             }
         }
     }
-
-    if (!$is_plugin_updated) {
-        return;
-    }
-    $gf_addon_wpextenstion = $wpdb->prefix . 'gf_settings';
-
-    $existing_columns = $wpdb->get_col("DESC {$gf_addon_wpextenstion}", 0);
-
-    // Implode to a string suitable for inserting into the SQL query
-
-    $sql[] = implode(', ', $existing_columns);
-
-    if (!in_array('select_lead_folder', $sql)):
-        //updated field in addon table
-        $wpdb->query(
-            "ALTER TABLE $gf_addon_wpextenstion ADD select_lead_folder VARCHAR(255)"
-        );
-    endif;
-    $sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}leadtype_form_save (
-        id int(11) unsigned not null auto_increment,
-        form_id int(11) unsigned not null,
-        field_id int(11) unsigned not null,
-        label_name varchar(255),
-        label_value int(11), PRIMARY KEY(id)) $charset_collate;";
-    gf_upgrade()->dbDelta($sql);
-    set_transient('myplugin_updated', 1);
-    break;
 }
-add_action('admin_enqueue_scripts', 'adminEnqueueScripts', 10, 1);
+add_action('upgrader_process_complete', 'wp_upe_upgrade_completed', 10, 2);
+
+/**
+ * Show a notice to anyone who has just updated this plugin
+ * This notice shouldn't display to anyone who has just installed the plugin for the first time
+ */
+function wp_upe_display_update_notice()
+{
+    // Check the transient to see if we've just updated the plugin
+    if (get_transient('wp_upe_updated')) {
+        echo '<div class="notice notice-success">' .
+            __('Thanks for updating', 'wp-upe') .
+            '</div>';
+        delete_transient('wp_upe_updated');
+    }
+}
+add_action('admin_notices', 'wp_upe_display_update_notice');
+
+/**
+ * Show a notice to anyone who has just installed the plugin for the first time
+ * This notice shouldn't display to anyone who has just updated this plugin
+ */
+function wp_upe_display_install_notice()
+{
+    // Check the transient to see if we've just activated the plugin
+    if (get_transient('wp_upe_activated')) {
+        echo '<div class="notice notice-success">' .
+            __('Thanks for installing', 'wp-upe') .
+            '</div>';
+        // Delete the transient so we don't keep displaying the activation message
+        delete_transient('wp_upe_activated');
+    }
+}
+add_action('admin_notices', 'wp_upe_display_install_notice');
+
+/**
+ * Run this on activation
+ * Set a transient so that we know we've just activated the plugin
+ */
 
 add_action('wp_ajax_lead_type_option_submit', 'lead_type_option_submit');
 
