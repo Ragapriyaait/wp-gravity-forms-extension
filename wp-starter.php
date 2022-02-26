@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.44
+Version: 2.2.45
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -611,7 +611,7 @@ function custom_logs($message)
     $file = fopen('../dt.log', 'a');
     echo fwrite(
         $file,
-        "\n" . date('Y-m-d h:i:s') . ' :: ' . 'ddddddddddddddddddddddddd'
+        "\n" . date('Y-m-d h:i:s') . ' :: ' . 'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv'
     );
     fclose($file);
     exit();
@@ -775,15 +775,24 @@ function log_form_deleted($form_id)
 }
 
 //update the hook for create new field in database addon table.
-
 function wp_upe_upgrade_completed($upgrader_object, $options)
 {
     // The path to our plugin's main file
-
-    // Iterate through the plugins being updated and check if ours is there
-
-    // Your action if it is your plugin
-    custom_logs('testleads');
+    $our_plugin = plugin_basename(__FILE__);
+    // If an update has taken place and the updated type is plugins and the plugins element exists
+    if (
+        $options['action'] == 'update' &&
+        $options['type'] == 'plugin' &&
+        isset($options['plugins'])
+    ) {
+        // Iterate through the plugins being updated and check if ours is there
+        foreach ($options['plugins'] as $plugin) {
+            if ($plugin == $our_plugin) {
+                // Your action if it is your plugin
+                custom_logs('ssssssssssssssssssss');
+            }
+        }
+    }
 }
 add_action('upgrader_process_complete', 'wp_upe_upgrade_completed', 10, 2);
 add_action('admin_enqueue_scripts', 'adminEnqueueScripts', 10, 1);
