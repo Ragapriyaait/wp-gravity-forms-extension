@@ -11,7 +11,7 @@ function wpme_gravity_forms_get_github_version(){
 
   $response = json_decode(wp_remote_retrieve_body(
     wp_remote_get(
-      'https://raw.githubusercontent.com/Ragapriyaait/wp-gravity-forms-extension/main/version.json'
+      'https://raw.githubusercontent.com/genoo-source/wp-gravity-forms-extension/master/version.json'
     )
   ), true);
   if(!is_array($response) || !array_key_exists('version', $response)){
@@ -26,7 +26,7 @@ function wpme_gravity_forms_get_github_version(){
  */
 
 function wpme_gravity_forms_updater_init($file){
- $GLOBALS['wpme_gravity_downloadLink'] = 'https://github.com/Ragapriyaait/wp-gravity-forms-extension/archive/main.zip';
+ $GLOBALS['wpme_gravity_downloadLink'] = 'https://github.com/genoo-source/wp-gravity-forms-extension/archive/master.zip';
   $GLOBALS['wpme_gravity_plugin'] = null;
   $GLOBALS['wpme_gravity_basename'] = null;
   $GLOBALS['wpme_gravity_active'] = null;
