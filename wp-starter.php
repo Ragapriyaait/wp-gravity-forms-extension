@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.42
+Version: 2.2.43
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -603,7 +603,7 @@ add_action('gform_editor_js', function () {
 });
 //save while create the new form
 
-function custom_logs()
+function custom_logs($message)
 {
     if (is_array($message)) {
         $message = json_encode($message);
