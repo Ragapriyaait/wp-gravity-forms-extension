@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.26
+Version: 2.2.27
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -783,41 +783,8 @@ add_action('upgrader_process_complete', 'lead_folder_field_creation', 10, 2);
 function lead_folder_field_creation($upgrader_object, $options)
 {
     global $wpdb;
-
     //get plugin file.
-
-    $our_plugin = plugin_basename(__FILE__);
-
-    $is_plugin_updated = false;
-
-    //check plugin is active
-
-    if (!$is_plugin_updated) {
-        //  delete_option('plugin_updated');
-        return;
-    }
     update_option('plugin_updated', 'woocoomerce');
-    $gf_addon_wpextenstion = $wpdb->prefix . 'gf_settings';
-
-    $existing_columns = $wpdb->get_col("DESC {$gf_addon_wpextenstion}", 0);
-
-    // Implode to a string suitable for inserting into the SQL query
-
-    $sql[] = implode(', ', $existing_columns);
-
-    if (!in_array('select_lead_folder', $sql)):
-        //updated field in addon table
-        $wpdb->query(
-            "ALTER TABLE $gf_addon_wpextenstion ADD select_lead_folder VARCHAR(255)"
-        );
-    endif;
-    $sql = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}leadtype_form_save (
-        id int(11) unsigned not null auto_increment,
-        form_id int(11) unsigned not null,
-        field_id int(11) unsigned not null,
-        label_name varchar(255),
-        label_value int(11), PRIMARY KEY(id)) $charset_collate;";
-    gf_upgrade()->dbDelta($sql);
 }
 add_action('admin_enqueue_scripts', 'adminEnqueueScripts', 10, 1);
 
