@@ -1589,7 +1589,7 @@ function wp_upe_upgrade_completed($upgrader_object, $options)
 
     }
 
-}
+
 }
 
 add_action('upgrader_process_complete', 'wp_upe_upgrade_completed', 10, 2);
