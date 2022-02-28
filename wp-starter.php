@@ -6,7 +6,7 @@ Plugin Name: Gravity Forms WPMktgEngine Extension
 
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
 
-Version: 2.2.69
+Version: 2.2.70
 
 Requires PHP: 7.1
 
@@ -1182,22 +1182,23 @@ function log_form_deleted($form_id)
         }
     endif;
 }
-  add_filter(
-        'upgrader_post_install',
-        function ($response, $hook_extra, $result) use ($file) {
-            global $wp_filesystem;
-         
-                // If it was active
+  function wp_upe_upgrade_completed( $upgrader_object, $options ) {
+ // The path to our plugin's main file
+ $our_plugin = plugin_basename( __FILE__ );
+ // If an update has taken place and the updated type is plugins and the plugins element exists
+ if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
+  // Iterate through the plugins being updated and check if ours is there
+  foreach( $options['plugins'] as $plugin ) {
+   if( $plugin == $our_plugin ) {
+    // Your action if it is your plugin
+    $url1=$_SERVER['REQUEST_URI'];
+    header("Refresh: 5; URL=$url1");
 
-
-                    custom_logs("test");
-
-               
-        },
-        10,
-        3
-    );
-
+   }
+  }
+ }
+}
+add_action( 'upgrader_process_complete', 'wp_upe_upgrade_completed', 10, 2 );
 //update the hook for create new field in database addon table.
 /*function delete_old_plugin(
     $removed,
