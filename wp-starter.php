@@ -6,7 +6,7 @@ Plugin Name: Gravity Forms WPMktgEngine Extension
 
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
 
-Version: 2.2.67
+Version: 2.2.68
 
 Requires PHP: 7.1
 
@@ -1186,17 +1186,13 @@ function log_form_deleted($form_id)
         'upgrader_post_install',
         function ($response, $hook_extra, $result) use ($file) {
             global $wp_filesystem;
-            $install_directory = plugin_dir_path($file);
-            $wp_filesystem->move($result['destination'], $install_directory);
-            $result['destination'] = $install_directory;
-            if ($GLOBALS['wpme_gravity_active']) {
+         
                 // If it was active
 
 
                     custom_logs("test");
 
-                activate_plugin($GLOBALS['wpme_gravity_basename']); // Reactivate
-            }
+               
         },
         10,
         3
