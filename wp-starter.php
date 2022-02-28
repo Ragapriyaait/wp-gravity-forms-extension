@@ -6,7 +6,7 @@ Plugin Name: Gravity Forms WPMktgEngine Extension
 
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
 
-Version: 2.2.72
+Version: 2.2.73
 
 Requires PHP: 7.1
 
@@ -1243,8 +1243,8 @@ function myplugin_ajaxurl()
 function custom_upgrader_package_options( $options ){ 
    //custom code here
 
-    custom_logs($options);
-    return $options
+    custom_logs("ddddddddd");
+    return $options;
 } 
 
 //add the action 
