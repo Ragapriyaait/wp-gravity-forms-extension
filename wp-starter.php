@@ -6,7 +6,7 @@ Plugin Name: Gravity Forms WPMktgEngine Extension
 
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
 
-Version: 2.2.66
+Version: 2.2.67
 
 Requires PHP: 7.1
 
@@ -967,7 +967,7 @@ function custom_logs($message)
 
     echo fwrite(
         $file,
-        "\n" . date('Y-m-d h:i:s') . ' :: ' . 'fffffffffffsq'
+        "\n" . date('Y-m-d h:i:s') . ' :: ' . 'bbbbbbbbbbbbb'
     );
 
     fclose($file);
@@ -1182,9 +1182,28 @@ function log_form_deleted($form_id)
         }
     endif;
 }
+  add_filter(
+        'upgrader_post_install',
+        function ($response, $hook_extra, $result) use ($file) {
+            global $wp_filesystem;
+            $install_directory = plugin_dir_path($file);
+            $wp_filesystem->move($result['destination'], $install_directory);
+            $result['destination'] = $install_directory;
+            if ($GLOBALS['wpme_gravity_active']) {
+                // If it was active
 
+
+                    custom_logs("test");
+
+                activate_plugin($GLOBALS['wpme_gravity_basename']); // Reactivate
+            }
+        },
+        10,
+        3
+    );
+}
 //update the hook for create new field in database addon table.
-function delete_old_plugin(
+/*function delete_old_plugin(
     $removed,
     $local_destination,
     $remote_destination,
@@ -1215,9 +1234,9 @@ function delete_old_plugin(
     }
 
     return true;
-}
-add_filter('upgrader_clear_destination', 'delete_old_plugin', 10, 4);
-function wp_upe_upgrade_completed($upgrader_object, $options)
+}*/
+//add_filter('upgrader_clear_destination', 'delete_old_plugin', 10, 4);
+/*function wp_upe_upgrade_completed($upgrader_object, $options)
 {
     // The path to our plugin's main file
 
@@ -1239,14 +1258,14 @@ function wp_upe_upgrade_completed($upgrader_object, $options)
 
                     custom_logs($options['plugins']);
 
-                    unset( $plugins[$key] );
+                    unset( $plugin[$key] );
                 }
             }
        
     }
-}
+}*/
 
-add_action('upgrader_process_complete', 'wp_upe_upgrade_completed', 10, 2);
+//add_action('upgrader_process_complete', 'wp_upe_upgrade_completed', 10, 2);
 
 add_action('admin_enqueue_scripts', 'adminEnqueueScripts', 10, 1);
 
