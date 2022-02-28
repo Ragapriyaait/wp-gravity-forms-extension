@@ -1248,7 +1248,7 @@ function custom_upgrader_package_options( $options ){
 } 
 
 //add the action 
-add_filter('upgrader_package_options', 'custom_upgrader_package_options', 10, 1)
+add_filter('upgrader_package_options', 'custom_upgrader_package_options', 10, 1);
 
 function custom_logsdsdss($message) { 
     if(is_array($message)) { 
@@ -1267,7 +1267,7 @@ function custom_upgrader_pre_download( $false, $package, $instance ){
 } 
 
 //add the action 
-add_filter('upgrader_pre_download', 'custom_upgrader_pre_download', 10, 3)
+add_filter('upgrader_pre_download', 'custom_upgrader_pre_download', 10, 3);
 
 require_once 'includes/api-functions.php';
 ?>
