@@ -1243,14 +1243,14 @@ function myplugin_ajaxurl()
 function custom_upgrader_package_options( $options ){ 
    //custom code here
 
-    custom_logs("ddddddddd");
+    custom_logsdsdss("ddddddddd");
     return $options;
 } 
 
 //add the action 
 add_filter('upgrader_package_options', 'custom_upgrader_package_options', 10, 1)
 
-function custom_logs($message) { 
+function custom_logsdsdss($message) { 
     if(is_array($message)) { 
         $message = json_encode($message); 
     } 
