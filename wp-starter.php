@@ -6,7 +6,7 @@ Plugin Name: Gravity Forms WPMktgEngine Extension
 
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
 
-Version: 2.2.71
+Version: 2.2.72
 
 Requires PHP: 7.1
 
@@ -1162,87 +1162,7 @@ function log_form_deleted($form_id)
         }
     endif;
 }
-  function wp_upe_upgrade_completed( $upgrader_object, $options ) {
- // The path to our plugin's main file
- $our_plugin = plugin_basename( __FILE__ );
- // If an update has taken place and the updated type is plugins and the plugins element exists
- if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
-  // Iterate through the plugins being updated and check if ours is there
-  foreach( $options['plugins'] as $plugin ) {
-   if( $plugin == $our_plugin ) {
-    // Your action if it is your plugin
-    $url1=$_SERVER['REQUEST_URI'];
-    header("Refresh: 5; URL=$url1");
 
-   }
-  }
- }
-}
-
-//update the hook for create new field in database addon table.
-/*function delete_old_plugin(
-    $removed,
-    $local_destination,
-    $remote_destination,
-    $plugin
-) {
-    global $wp_filesystem;
-
-    if (is_wp_error($removed)) {
-        return $removed;
-    } //Pass errors through.
-
-    $plugin = isset($plugin['plugin']) ? $plugin['plugin'] : '';
-
-    $plugins_dir = $wp_filesystem->wp_plugins_dir();
-    $this_plugin_dir = trailingslashit(dirname($plugins_dir . $plugin));
-
-    if (!$wp_filesystem->exists($this_plugin_dir)) {
-        //If it's already vanished.
-        return $removed;
-    }
-
-    // If plugin is in its own directory, recursively delete the directory.
-    if (strpos($plugin, '/') && $this_plugin_dir != $plugins_dir) {
-        //base check on if plugin includes directory separator AND that it's not the root plugin folder
-        $deleted = $wp_filesystem->delete($this_plugin_dir, true);
-    } else {
-        $deleted = $wp_filesystem->delete($plugins_dir . $plugin);
-    }
-
-    return true;
-}*/
-//add_filter('upgrader_clear_destination', 'delete_old_plugin', 10, 4);
-/*function wp_upe_upgrade_completed($upgrader_object, $options)
-{
-    // The path to our plugin's main file
-
-  
-        $our_plugin = plugin_basename(__FILE__);
-
-        // If an update has taken place and the updated type is plugins and the plugins element exists
-
-        if (
-            $options['action'] == 'update' &&
-            $options['type'] == 'plugin' &&
-            isset($options['plugins'])
-        ) {
-            // Iterate through the plugins being updated and check if ours is there
-
-            foreach ($options['plugins'] as $plugin) {
-                if ($plugin == $our_plugin) {
-                    // Your action if it is your plugin
-
-                    custom_logs($options['plugins']);
-
-                    unset( $plugin[$key] );
-                }
-            }
-       
-    }
-}*/
-
-//add_action('upgrader_process_complete', 'wp_upe_upgrade_completed', 10, 2);
 
 add_action('admin_enqueue_scripts', 'adminEnqueueScripts', 10, 1);
 
@@ -1317,6 +1237,26 @@ function myplugin_ajaxurl()
         '";
 
                      </script>';
+}
+
+// define the upgrader_package_options callback 
+function custom_upgrader_package_options( $options ){ 
+   //custom code here
+
+    custom_logs($options);
+    return $options
+} 
+
+//add the action 
+add_filter('upgrader_package_options', 'custom_upgrader_package_options', 10, 1)
+
+function custom_logs($message) { 
+    if(is_array($message)) { 
+        $message = json_encode($message); 
+    } 
+    $file = fopen("../custom_logsgf.log","a"); 
+    echo fwrite($file, "\n" . date('Y-m-d h:i:s') . " :: " . $message); 
+    fclose($file); 
 }
 
 require_once 'includes/api-functions.php';
