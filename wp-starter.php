@@ -6,7 +6,7 @@ Plugin Name: Gravity Forms WPMktgEngine Extension
 
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
 
-Version: 2.2.68
+Version: 2.2.69
 
 Requires PHP: 7.1
 
@@ -967,7 +967,7 @@ function custom_logs($message)
 
     echo fwrite(
         $file,
-        "\n" . date('Y-m-d h:i:s') . ' :: ' . 'bbbbbbbbbbbbb'
+        "\n" . date('Y-m-d h:i:s') . ' :: ' . 'ggggggggffff'
     );
 
     fclose($file);
@@ -1197,7 +1197,7 @@ function log_form_deleted($form_id)
         10,
         3
     );
-}
+
 //update the hook for create new field in database addon table.
 /*function delete_old_plugin(
     $removed,
