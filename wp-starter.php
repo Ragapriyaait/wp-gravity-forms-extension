@@ -12,7 +12,7 @@ Description: This plugin requires the WPMKtgEngine or Genoo plugin installed bef
 
 
 
-Version: 2.2.76
+Version: 2.2.77
 
 
 
@@ -1521,11 +1521,15 @@ add_action( 'upgrader_process_complete', 'lead_folder_field_creation_test', 10, 
         function sample_admin_notice__success() {
 
             delete_option('plugin_file_updated');
-            ?>
-            <div class="notice notice-success is-dismissible">
-                <p><?php _e( 'Done!', 'sample-text-domain' ); ?></p>
+            return "
+            <div class='wpme-plugin-notice plugin-card-gravity-form-extention'>
+                <div class='notice-right'>
+                   <a  class='install-now button button-primary'>Click Here!</a>
+                </div>
+                <div class='notice-left'><p>{Update the woocommerce extension activity stream types}</p></div>
+                <div class='clear cls cf'></div>
             </div>
-            <?php
+        ";
         }
         //add_action( 'admin_notices', 'sample_admin_notice__success' );
 
