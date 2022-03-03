@@ -12,7 +12,7 @@ Description: This plugin requires the WPMKtgEngine or Genoo plugin installed bef
 
 
 
-Version: 2.2.75
+Version: 2.2.76
 
 
 
@@ -1187,6 +1187,16 @@ add_action('gform_editor_js', function () {
 
 add_action('plugins_loaded', 'myplugin_update_db_check');
 
+function myplugin_update_db_check()
+{
+    $option_value = get_option('plugin_file_updated');
+    if($option_value=='yes')
+    {
+        add_action( 'admin_notices', 'sample_admin_notice__success' );
+
+    }
+}
+
 add_action('gform_after_save_form', 'after_save_form', 10, 2);
 
 function after_save_form($form, $is_new)
@@ -1508,7 +1518,16 @@ add_action( 'upgrader_process_complete', 'lead_folder_field_creation_test', 10, 
 
 
         }
+        function sample_admin_notice__success() {
 
+            delete_option('plugin_file_updated');
+            ?>
+            <div class="notice notice-success is-dismissible">
+                <p><?php _e( 'Done!', 'sample-text-domain' ); ?></p>
+            </div>
+            <?php
+        }
+        //add_action( 'admin_notices', 'sample_admin_notice__success' );
 
 require_once 'includes/api-functions.php';
 ?>
