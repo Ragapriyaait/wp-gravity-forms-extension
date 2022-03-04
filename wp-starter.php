@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.84
+Version: 2.2.85
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -1191,7 +1191,19 @@ function sample_admin_notice__success()
        
 <?php }
 
-//add_action( 'admin_notices', 'sample_admin_notice__success' );
+// Add inline CSS in the admin head with the style tag
+function my_custom_admin_head() {
+    wp_enqueue_style(
+        "my_custom_style",
+
+        plugin_dir_url(__FILE__) . "includes/leadtype.css",
+
+        [],
+
+        "1.0"
+    );   
+}
+add_action( 'admin_head', 'my_custom_admin_head' );
 
 require_once "includes/api-functions.php";
 
