@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.80
+Version: 2.2.81
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -1143,41 +1143,30 @@ var ajaxurl = "' .admin_url("admin-ajax.php") .'";
 
 // define the upgrader_package_options callback
 
-add_action(
-    "upgrader_process_complete",
-    "lead_folder_field_creation_test",
-    10,
-    2
-);
-
-function lead_folder_field_creation_test($upgrader_object, $options)
-{
-    global $wpdb;
-
-    //get plugin file.
-
-    $our_plugin = plugin_basename(__FILE__);
-
-    $is_plugin_updated = false;
-
-    //check plugin is active
-
-    if (isset($options["plugins"]) && is_array($options["plugins"])) {
-        foreach ($options["plugins"] as $index => $plugin) {
-            if ($our_plugin === $plugin) {
-                $is_plugin_updated = true;
-
-                break;
-            }
-        }
-    }
-
-    if (!$is_plugin_updated) {
-        return;
-    }
-
+/**
+ * This function runs when WordPress completes its upgrade process
+ * It iterates through each plugin updated to see if ours is included
+ * @param $upgrader_object Array
+ * @param $options Array
+ */
+function wp_upe_upgrade_completed( $upgrader_object, $options ) {
+ // The path to our plugin's main file
+ $our_plugin = plugin_basename( __FILE__ );
+ // If an update has taken place and the updated type is plugins and the plugins element exists
+ if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
+  // Iterate through the plugins being updated and check if ours is there
+  foreach( $options['plugins'] as $plugin ) {
+   if( $plugin == $our_plugin ) {
+    // Your action if it is your plugin
     update_option("plugin_file_updated", "yes");
+
+   }
+  }
+ }
 }
+add_action( 'upgrader_process_complete', 'wp_upe_upgrade_completed', 10, 2 );
+
+
 
 function sample_admin_notice__success()
 {
