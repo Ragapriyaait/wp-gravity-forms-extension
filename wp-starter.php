@@ -1,74 +1,148 @@
 <?php
 
+
+
 /*
+
+
 
 Plugin Name: Gravity Forms WPMktgEngine Extension
 
+
+
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
 
-Version: 2.2.92
+
+
+Version: 2.2.93
+
+
 
 Requires PHP: 7.1
 
+
+
 Author: Genoo LLC
 
+
+
 */
+
+
 
 /*
 
+
+
 Copyright 2015  WPMKTENGINE, LLC  (web : http://www.genoo.com/)
+
+
 
 This program is free software; you can redistribute it and/or modify
 
+
+
 it under the terms of the GNU General Public License, version 2, as
+
+
 
 published by the Free Software Foundation.
 
+
+
 This program is distributed in the hope that it will be useful,
+
+
 
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 
+
+
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+
+
 
 GNU General Public License for more details.
 
+
+
 You should have received a copy of the GNU General Public License
+
+
 
 along with this program; if not, write to the Free Software
 
+
+
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+
 
 */
 
+
+
 register_activation_hook(__FILE__, function () {
+
+
 
     // Basic extension data
 
+
+
     global $wpdb;
+
+
 
     $fileFolder = basename(dirname(__FILE__));
 
+
+
     $file = basename(__FILE__);
+
+
 
     $filePlugin = $fileFolder . DIRECTORY_SEPARATOR . $file;
 
+
+
     // Activate?
+
+
 
     $activate = false;
 
+
+
     $isGenoo = false;
+
+
 
     // Get api / repo
 
+
+
     if (
+
+
 
         class_exists("\WPME\ApiFactory") &&
 
+
+
         class_exists("\WPME\RepositorySettingsFactory")
+
+
 
     ) {
 
+
+
         $activate = true;
+
+
+
+
 
 
 
@@ -76,25 +150,51 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
         $api = new \WPME\ApiFactory($repo);
+
+
+
+
 
 
 
         if (class_exists("\Genoo\Api")) {
 
+
+
             $isGenoo = true;
+
+
 
         }
 
+
+
     } elseif (
+
+
 
         class_exists("\Genoo\Api") &&
 
+
+
         class_exists("\Genoo\RepositorySettings")
+
+
 
     ) {
 
+
+
         $activate = true;
+
+
+
+
 
 
 
@@ -102,21 +202,43 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
         $api = new \Genoo\Api($repo);
+
+
+
+
 
 
 
         $isGenoo = true;
 
+
+
     } elseif (
+
+
 
         class_exists("\WPMKTENGINE\Api") &&
 
+
+
         class_exists("\WPMKTENGINE\RepositorySettings")
+
+
 
     ) {
 
+
+
         $activate = true;
+
+
+
+
 
 
 
@@ -124,9 +246,19 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
         $api = new \WPMKTENGINE\Api($repo);
 
+
+
     }
+
+
+
+
 
 
 
@@ -134,13 +266,27 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
     if ($activate == false && $isGenoo == false) { ?>
+
+
+
+
 
 
 
 <div class="alert">
 
+
+
 <p style="font-family:Segoe UI;font-size:14px;">This plugin requires the WPMKtgEngine or Genoo plugin installed  order to activate</p>
+
+
+
+
 
 
 
@@ -148,23 +294,47 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
   <?php
+
+
 
     die();
 
 
 
+
+
+
+
     genoo_wpme_deactivate_plugin(
+
+
 
         $filePlugin,
 
 
 
+
+
+
+
         "This extension requires WPMktgEngine or Genoo plugin to work with."
+
+
 
     );
 
+
+
     } else {// Make ACTIVATE calls if any?}
+
+
+
+
 
 
 
@@ -172,39 +342,79 @@ register_activation_hook(__FILE__, function () {
 
 
 
+
+
+
+
         $sql = "CREATE TABLE {$wpdb->prefix}gf_settings (
+
+
+
+
 
 
 
 id mediumint(8) unsigned not null auto_increment,
 
+
+
 form_id mediumint(8) unsigned not null,
+
+
 
 is_active tinyint(1),
 
+
+
 select_lead_folder varchar(255),
+
+
 
 select_leadtype  varchar(255),
 
+
+
 select_folder  varchar(255),
+
+
 
 select_email varchar(255),
 
+
+
 select_webinar  varchar(250),
+
+
 
 PRIMARY KEY  (id),
 
+
+
 UNIQUE KEY form_id (form_id)) $charset_collate;";
 
+
+
 gf_upgrade()->dbDelta($sql);}
+
+
 
 });
 
 
 
+
+
+
+
 /**
 
+
+
  * Plugin Updates*/
+
+
+
+
 
 
 
@@ -212,19 +422,39 @@ include_once plugin_dir_path(__FILE__) . "deploy/updater.php";
 
 
 
+
+
+
+
 wpme_gravity_forms_updater_init(__FILE__);
+
+
+
+
 
 
 
 add_action(
 
+
+
     "wpmktengine_init",
+
+
+
+
 
 
 
     function ($repositarySettings, $api, $cache) {
 
+
+
         // Use the Settings, Api or Cache to do things on load of WPME if you need to
+
+
+
+
 
 
 
@@ -232,23 +462,47 @@ add_action(
 
 
 
+
+
+
+
         add_filter(
+
+
 
             "wpmktengine_tools_extensions_widget",
 
 
 
+
+
+
+
             function ($array) {
 
+
+
                 $array["Gravity Forms WPMktgEngine Extension"] =
+
+
 
                     '<span style="color:green">Active</span>' . $r;
 
 
 
+
+
+
+
                 return $array;
 
+
+
             },
+
+
+
+
 
 
 
@@ -256,35 +510,71 @@ add_action(
 
 
 
+
+
+
+
             1
+
+
 
         );
 
 
 
+
+
+
+
         add_filter(
+
+
 
             "wpmktengine_settings_sections",
 
 
 
+
+
+
+
             function ($sections) {
 
+
+
                 $sections[] = [
+
+
 
                     "id" => "Extension",
 
 
 
+
+
+
+
                     "title" => __("Extension", "wpmktengine"),
+
+
 
                 ];
 
 
 
+
+
+
+
                 return $sections;
 
+
+
             },
+
+
+
+
 
 
 
@@ -292,25 +582,51 @@ add_action(
 
 
 
+
+
+
+
             1
+
+
 
         );
 
 
 
+
+
+
+
         add_filter(
+
+
 
             "wpmktengine_settings_fields",
 
 
 
+
+
+
+
             function ($fields) {
+
+
 
                 $fields["Extension"] = [
 
+
+
                     [
 
+
+
                         "name" => "extension_cipher_key",
+
+
+
+
 
 
 
@@ -318,7 +634,15 @@ add_action(
 
 
 
+
+
+
+
                         "label" => __("Cipher", "wpmktengine"),
+
+
+
+
 
 
 
@@ -326,27 +650,55 @@ add_action(
 
 
 
+
+
+
+
                         "default" => "",
+
+
+
+
 
 
 
                         "attr" => [
 
+
+
                             "style" => "display: block",
+
+
 
                         ], // Custom attributes, js etc.
 
 
 
+
+
+
+
                         "desc" => __("Description", "wpmktengine"),
+
+
 
                     ],
 
 
 
+
+
+
+
                     [
 
+
+
                         "label" => __("Dropdown", "wpmktengine"),
+
+
+
+
 
 
 
@@ -354,7 +706,15 @@ add_action(
 
 
 
+
+
+
+
                         "id" => "extension_dropdown_key",
+
+
+
+
 
 
 
@@ -362,21 +722,43 @@ add_action(
 
 
 
+
+
+
+
                         "options" => [
+
+
 
                             0 => "Select",
 
+
+
                         ],
 
+
+
                     ],
+
+
 
                 ];
 
 
 
+
+
+
+
                 return $fields;
 
+
+
             },
+
+
+
+
 
 
 
@@ -384,11 +766,23 @@ add_action(
 
 
 
+
+
+
+
             1
+
+
 
         );
 
+
+
     },
+
+
+
+
 
 
 
@@ -396,9 +790,19 @@ add_action(
 
 
 
+
+
+
+
     3
 
+
+
 );
+
+
+
+
 
 
 
@@ -406,11 +810,23 @@ add_action("gform_after_submission", "access_entry_via_field", 10, 2);
 
 
 
+
+
+
+
 function access_entry_via_field($entry, $form)
+
+
 
 {
 
+
+
     global $wpdb, $WPME_API;
+
+
+
+
 
 
 
@@ -418,55 +834,111 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
     if ($id != 0):
+
+
 
         $gf_addon_wpextenstion = $wpdb->prefix . "gf_settings";
 
 
 
+
+
+
+
         $form_settings = $wpdb->get_row(
 
+
+
             "SELECT * from $gf_addon_wpextenstion WHERE form_id = $id"
+
+
 
         );
 
 
 
+
+
+
+
         $select_folder_id = isset($form_settings->select_folder)
+
+
 
             ? $form_settings->select_folder
 
+
+
             : "";
+
+
+
+
 
 
 
         $select_lead_id = isset($form_settings->select_leadtype)
 
+
+
             ? $form_settings->select_leadtype
 
+
+
             : "";
+
+
+
+
 
 
 
         $select_email_id = isset($form_settings->select_email)
 
+
+
             ? $form_settings->select_email
 
+
+
             : "";
+
+
+
+
 
 
 
         $select_webinar = isset($form_settings->select_webinar)
 
+
+
             ? $form_settings->select_webinar
+
+
 
             : "";
 
 
 
+
+
+
+
         if ($select_lead_id != ""):
 
+
+
             $values = [];
+
+
+
+
 
 
 
@@ -474,7 +946,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
             $values["client_ip_address"] = $entry["ip"];
+
+
+
+
 
 
 
@@ -482,7 +962,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
             //$values['form_type'] = 'opt-in form';
+
+
+
+
 
 
 
@@ -490,65 +978,131 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
             $values["form_type"] = "GF";
+
+
+
+
 
 
 
             if (!empty($select_email_id)):
 
+
+
                 $values["confirmation_email_id"] = $select_email_id;
 
+
+
             endif;
+
+
+
+
 
 
 
             if (!empty($select_webinar)):
 
+
+
                 $values["webinar_id"] = $select_webinar;
+
+
 
             endif;
 
 
 
+
+
+
+
             foreach ($form["fields"] as $field):
+
+
 
                 // echo $field['type'];
 
 
 
+
+
+
+
                 if ($field["type"] == "email"):
+
+
 
                     $values["email"] = $entry[$field["id"]];
 
+
+
                 endif;
+
+
+
+
 
 
 
                 if ($field["type"] == "phone" && !empty($entry[$field["id"]])):
 
+
+
                     $values["phone"] = $entry[$field["id"]];
 
+
+
                 endif;
+
+
+
+
 
 
 
                 if (
 
+
+
                     $field["type"] == "website" &&
+
+
 
                     !empty($entry[$field["id"]])
 
+
+
                 ):
 
+
+
                     $values["web_site_url"] = $entry[$field["id"]];
+
+
 
                 endif;
 
 
 
+
+
+
+
                 if ($field["type"] == "address"):
 
+
+
                     $field_id = $field["id"];
+
+
+
+
 
 
 
@@ -556,7 +1110,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     $values["address2"] = $entry[$field_id . ".2"];
+
+
+
+
 
 
 
@@ -564,7 +1126,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     $values["state"] = $entry[$field_id . ".4"];
+
+
+
+
 
 
 
@@ -572,37 +1142,75 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     $values["zip"] = $entry[$field_id . ".5"];
+
+
+
+
 
 
 
                     $values["country"] = $entry[$field_id . ".6"];
 
+
+
                 endif;
+
+
+
+
 
 
 
                 if ($field["type"] == "consent"):
 
+
+
                     $values["c00gdprconsent"] =
+
+
 
                         $entry[$field["id"] . ".1"] != 1 ? "" : 1;
 
 
 
+
+
+
+
                     if (!empty($field->description)):
+
+
 
                         $values["c00gdprconsentmsg"] = $field->description;
 
+
+
                     endif;
+
+
 
                 endif;
 
 
 
+
+
+
+
                 if ($field["type"] == "name"):
 
+
+
                     $field_id = $field["id"];
+
+
+
+
 
 
 
@@ -610,15 +1218,31 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     $values["last_name"] = $entry[$field_id . ".6"];
+
+
 
                 endif;
 
 
 
+
+
+
+
                 $all_default_types = [
 
+
+
                     "textarea",
+
+
+
+
 
 
 
@@ -626,7 +1250,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "multiselect",
+
+
+
+
 
 
 
@@ -634,7 +1266,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "number",
+
+
+
+
 
 
 
@@ -642,7 +1282,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "fileupload",
+
+
+
+
 
 
 
@@ -650,7 +1298,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "product",
+
+
+
+
 
 
 
@@ -658,7 +1314,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "creditcard",
+
+
+
+
 
 
 
@@ -666,7 +1330,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "html",
+
+
+
+
 
 
 
@@ -674,7 +1346,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "page",
+
+
+
+
 
 
 
@@ -682,7 +1362,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "radio",
+
+
+
+
 
 
 
@@ -690,7 +1378,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "post_image",
+
+
+
+
 
 
 
@@ -698,7 +1394,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "post_excerpt",
+
+
+
+
 
 
 
@@ -706,7 +1410,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "option",
+
+
+
+
 
 
 
@@ -714,7 +1426,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "shipping",
+
+
+
+
 
 
 
@@ -722,7 +1442,15 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "date",
+
+
+
+
 
 
 
@@ -730,9 +1458,19 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     "hidden",
 
+
+
                 ];
+
+
+
+
 
 
 
@@ -740,17 +1478,35 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                 if (
+
+
 
                     in_array($field["type"], $all_default_types) &&
 
+
+
                     !empty($entry[$field["id"]]) &&
+
+
 
                     !empty($field->thirdPartyInput)
 
+
+
                 ):
 
+
+
                     $firstindex = strstr($field->thirdPartyInput, "c00");
+
+
+
+
 
 
 
@@ -758,9 +1514,19 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                     if ($firstindex == true && $lastindex == true):
 
+
+
                         $date = date_create($entry[$field["id"]]);
+
+
+
+
 
 
 
@@ -768,13 +1534,27 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                         $values[$field->thirdPartyInput] =
+
+
 
                             $date . "T" . "00:00:00+00:00";
 
+
+
                     elseif ($firstindex == false && $lastindex == true):
 
+
+
                         $date = date_create($entry[$field["id"]]);
+
+
+
+
 
 
 
@@ -782,49 +1562,99 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                         $values[$field->thirdPartyInput] = $date;
+
+
 
                     elseif (
 
+
+
                         $field["type"] == "radio" &&
+
+
 
                         $field->thirdPartyInput == "c00eudatasubject" &&
 
+
+
                         !empty($entry[$field["id"]])
+
+
 
                     ):
 
+
+
                         $values["c00eudatasubject"] = "1";
+
+
 
                     elseif (!empty($entry[$field["id"]])):
 
+
+
                         $values[$field->thirdPartyInput] = $entry[$field["id"]];
+
+
 
                     endif;
 
+
+
                 endif;
+
+
+
+
 
 
 
                 if ($field["type"] == "checkbox"):
 
+
+
                     $inputs = $field->get_entry_inputs();
+
+
+
+
 
 
 
                     foreach ($inputs as $inputsfields):
 
+
+
                         if (!empty($entry[$inputsfields["id"]])):
+
+
 
                             $values[$field->thirdPartyInput] = "1";
 
+
+
                         endif;
+
+
 
                     endforeach;
 
+
+
                 endif;
 
+
+
             endforeach;
+
+
+
+
 
 
 
@@ -832,13 +1662,27 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
             if (method_exists($WPME_API, "callCustom")):
+
+
 
                 try {
 
+
+
                     $response = $WPME_API->callCustom(
 
+
+
                         "/leadformsubmit",
+
+
+
+
 
 
 
@@ -846,13 +1690,25 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
                         $values
+
+
 
                     );
 
 
 
+
+
+
+
                     if ($WPME_API->http->getResponseCode() == 204):
+
+
 
                         // No values based on folderdid onchange! Ooops
 
@@ -860,11 +1716,23 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
+
+
                     elseif ($WPME_API->http->getResponseCode() == 200):
+
+
 
                     endif;
 
+
+
                 } catch (Exception $e) {
+
+
 
                     if ($WPME_API->http->getResponseCode() == 404):
 
@@ -872,13 +1740,29 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
+
+
                         // Looks like leadfields not found
+
+
 
                     endif;
 
+
+
                 }
 
+
+
             endif;
+
+
+
+
 
 
 
@@ -886,19 +1770,39 @@ function access_entry_via_field($entry, $form)
 
 
 
+
+
+
+
             setcookie("_gtld", $geno_ids, time() + 10 * 365 * 24 * 60 * 60);
+
+
 
         endif;
 
+
+
     endif;
+
+
 
 }
 
 
 
+
+
+
+
 add_action("wp_action_to_modify", function () {
 
+
+
     // Get WPME api object, same in both Genoo and WPME plugins
+
+
+
+
 
 
 
@@ -906,15 +1810,31 @@ add_action("wp_action_to_modify", function () {
 
 
 
+
+
+
+
     // It's set on INIT, if it's not present, this hook runs too early and you
+
+
+
+
 
 
 
     if (!$WPME_API) {
 
+
+
         return;
 
+
+
     }
+
+
+
+
 
 
 
@@ -922,7 +1842,15 @@ add_action("wp_action_to_modify", function () {
 
 
 
+
+
+
+
     // Get or save to settings repository
+
+
+
+
 
 
 
@@ -930,7 +1858,15 @@ add_action("wp_action_to_modify", function () {
 
 
 
+
+
+
+
     // Value from custom setttings above
+
+
+
+
 
 
 
@@ -938,7 +1874,15 @@ add_action("wp_action_to_modify", function () {
 
 
 
+
+
+
+
     // Do something with settings value from custom settings?
+
+
+
+
 
 
 
@@ -946,17 +1890,35 @@ add_action("wp_action_to_modify", function () {
 
 
 
+
+
+
+
     // 1. Get lead by email address
+
+
+
+
 
 
 
     try {
 
+
+
         $lead = $WPME_API->getLeadByEmail("lead@email.com");
+
+
 
     } catch (\Exception $e) {
 
+
+
     }
+
+
+
+
 
 
 
@@ -964,11 +1926,23 @@ add_action("wp_action_to_modify", function () {
 
 
 
+
+
+
+
     if (method_exists($WPME_API, "callCustom")) {
+
+
 
         try {
 
+
+
             $product_id_external = 1;
+
+
+
+
 
 
 
@@ -976,9 +1950,19 @@ add_action("wp_action_to_modify", function () {
 
 
 
+
+
+
+
             $product = $WPME_API->callCustom(
 
+
+
                 "/wpmeproductbyextid/" . $product_id_external,
+
+
+
+
 
 
 
@@ -986,33 +1970,67 @@ add_action("wp_action_to_modify", function () {
 
 
 
+
+
+
+
                 null
+
+
 
             );
 
 
 
+
+
+
+
             if ($WPME_API->http->getResponseCode() == 204) {
+
+
 
                 // No product! Ooops
 
+
+
             } elseif ($WPME_API->http->getResponseCode() == 200) {
+
+
 
                 // Good product in $product variable
 
+
+
             }
+
+
 
         } catch (Exception $e) {
 
+
+
             if ($WPME_API->http->getResponseCode() == 404) {
+
+
 
                 // Looks like product not found
 
+
+
             }
+
+
 
         }
 
+
+
     }
+
+
+
+
 
 
 
@@ -1020,9 +2038,19 @@ add_action("wp_action_to_modify", function () {
 
 
 
+
+
+
+
     $apiKey = $WPME_API->key;
 
+
+
 });
+
+
+
+
 
 
 
@@ -1030,19 +2058,39 @@ add_action("gform_loaded", ["GF__gravityform_Bootstrap", "load"], 5);
 
 
 
+
+
+
+
 class GF__gravityform_Bootstrap
+
+
 
 {
 
+
+
     public static function load()
+
+
 
     {
 
+
+
         if (!method_exists("GFForms", "include_addon_framework")) {
+
+
 
             return;
 
+
+
         }
+
+
+
+
 
 
 
@@ -1050,37 +2098,75 @@ class GF__gravityform_Bootstrap
 
 
 
+
+
+
+
         require_once "class-gravityformextension.php";
+
+
+
+
 
 
 
         GFAddOn::register("Gravityformextension");
 
+
+
     }
 
+
+
 }
+
+
+
+
 
 
 
 function gf_gravityform()
 
+
+
 {
 
+
+
     return Gravityformextension::get_instance();
+
+
 
 }
 
 
 
+
+
+
+
 add_action(
+
+
 
     "gform_field_standard_settings",
 
 
 
+
+
+
+
     function ($position, $form_id) {
 
+
+
         // position -1 for adding third party(Genoo/WPMktgEngine Field:) as last
+
+
+
+
 
 
 
@@ -1088,7 +2174,15 @@ add_action(
 
 
 
+
+
+
+
             global $WPME_API;
+
+
+
+
 
 
 
@@ -1096,13 +2190,27 @@ add_action(
 
 
 
+
+
+
+
             if (method_exists($WPME_API, "callCustom")):
+
+
 
                 try {
 
+
+
                     $customfields = $WPME_API->callCustom(
 
+
+
                         "/leadfields",
+
+
+
+
 
 
 
@@ -1110,13 +2218,25 @@ add_action(
 
 
 
+
+
+
+
                         null
+
+
 
                     );
 
 
 
+
+
+
+
                     if ($WPME_API->http->getResponseCode() == 204):
+
+
 
                         // No leadfields based on folderdid onchange! Ooops
 
@@ -1124,17 +2244,37 @@ add_action(
 
 
 
+
+
+
+
+
+
                     elseif ($WPME_API->http->getResponseCode() == 200):
+
+
 
                         $customfieldsjson = $customfields;
 
+
+
                     endif;
+
+
 
                 } catch (Exception $e) {
 
+
+
                 }
 
+
+
             endif;
+
+
+
+
 
 
 
@@ -1142,13 +2282,27 @@ add_action(
 
 
 
+
+
+
+
             // $pre_mapped_fields for should not show the premapped fields
+
+
+
+
 
 
 
             $pre_mapped_fields = [
 
+
+
                 "First Name",
+
+
+
+
 
 
 
@@ -1156,7 +2310,15 @@ add_action(
 
 
 
+
+
+
+
                 "Email",
+
+
+
+
 
 
 
@@ -1164,7 +2326,15 @@ add_action(
 
 
 
+
+
+
+
                 "Address 2",
+
+
+
+
 
 
 
@@ -1172,7 +2342,15 @@ add_action(
 
 
 
+
+
+
+
                 "State",
+
+
+
+
 
 
 
@@ -1180,7 +2358,15 @@ add_action(
 
 
 
+
+
+
+
                 "Country",
+
+
+
+
 
 
 
@@ -1188,7 +2374,15 @@ add_action(
 
 
 
+
+
+
+
                 "Zip",
+
+
+
+
 
 
 
@@ -1196,7 +2390,15 @@ add_action(
 
 
 
+
+
+
+
                 "GDPR Consent",
+
+
+
+
 
 
 
@@ -1204,11 +2406,23 @@ add_action(
 
 
 
+
+
+
+
                 "Web Site URL",
+
+
 
             ];
 
+
+
             ?>
+
+
+
+
 
 
 
@@ -1216,15 +2430,31 @@ add_action(
 
 
 
+
+
+
+
 <li class="thirdparty_input_setting field_setting">
+
+
+
+
 
 
 
  <label class="section_label" for="field_admin_label"><?php _e(
 
+
+
              "Genoo/WPMktgEngine Field:"
 
+
+
          ); ?></label>
+
+
+
+
 
 
 
@@ -1232,19 +2462,37 @@ add_action(
 
 
 
+
+
+
+
 <option value="">Do not map fields</option>
+
+
+
+
 
 
 
 <?php foreach ($customfieldsjson as $customfields):
 
+
+
                  //comparing labels with premapped labels in trim_custom_array
+
+
+
+
 
 
 
                  if (
 
+
+
                      !in_array(trim($customfields->label), $pre_mapped_fields)
+
+
 
                  ): ?>
 
@@ -1252,13 +2500,29 @@ add_action(
 
 
 
+
+
+
+
+
+
  <option value="<?php echo $customfields->key; ?>"> <?php echo trim(
+
+
 
     $customfields->label
 
+
+
 ); ?></option> <?php endif;
 
+
+
              endforeach; ?>
+
+
+
+
 
 
 
@@ -1266,7 +2530,15 @@ add_action(
 
 
 
+
+
+
+
     </li>
+
+
+
+
 
 
 
@@ -1276,13 +2548,29 @@ add_action(
 
 
 
+
+
+
+
+
+
  <?php if (method_exists($WPME_API, "callCustom")):
+
+
 
                         try {
 
+
+
                             $leadtypes_optional = $WPME_API->callCustom(
 
+
+
                                 "/leadtypes",
+
+
+
+
 
 
 
@@ -1290,21 +2578,43 @@ add_action(
 
 
 
+
+
+
+
                                 null
+
+
 
                             );
 
+
+
 if ($WPME_API->http->getResponseCode() == 204):
+
+
 
                                 // No leadfields based on folderdid onchange! Ooops
 
+
+
 elseif ($WPME_API->http->getResponseCode() == 200):
+
+
 
                                 $i = 0; ?>
 
 
 
+
+
+
+
  <div class="leadtypecheckbox" style="height:200px;overflow: auto";>
+
+
+
+
 
 
 
@@ -1314,13 +2624,31 @@ elseif ($WPME_API->http->getResponseCode() == 200):
 
 
 
+
+
+
+
+
+
  <?php foreach ($leadtypes_optional as $leadtypes_optional_values
+
+
 
                                     ) { ?>
 
 
 
+
+
+
+
  <li class="encrypt_setting_leadtypes field_setting">
+
+
+
+
+
+
 
 
 
@@ -1332,19 +2660,43 @@ elseif ($WPME_API->http->getResponseCode() == 200):
 
 
 
+
+
+
+
+
+
  <label for="field_encrypt_value<?php echo $i; ?>" class="leadtype_value_label<?php echo $i; ?>" style="display:inline;">
+
+
+
+
 
 
 
  <?php _e(
 
+
+
                         $leadtypes_optional_values->name,
+
+
+
+
 
 
 
                         "Gravity Forms WPMktgEngine Extension"
 
+
+
                     ); ?>
+
+
+
+
+
+
 
 
 
@@ -1354,13 +2706,31 @@ elseif ($WPME_API->http->getResponseCode() == 200):
 
 
 
+
+
+
+
   </label>  
 
 
 
 
 
+
+
+
+
+
+
 <input type="text" id="field_id_input_label_text" class="field_id_input_label_text<?php echo $i; ?>" value="<?php echo $leadtypes_optional_values->name; ?>" style="display: none;"/>
+
+
+
+
+
+
+
+
 
 
 
@@ -1376,7 +2746,21 @@ elseif ($WPME_API->http->getResponseCode() == 200):
 
 
 
+
+
+
+
+
+
+
+
 </li>
+
+
+
+
+
+
 
 
 
@@ -1388,11 +2772,27 @@ elseif ($WPME_API->http->getResponseCode() == 200):
 
 
 
+
+
+
+
+
+
  </div>
 
 
 
+
+
+
+
 <div> <button type="button" class="leadtypeselected">submit</button></div>
+
+
+
+
+
+
 
 
 
@@ -1404,13 +2804,27 @@ elseif ($WPME_API->http->getResponseCode() == 200):
 
 
 
+
+
+
+
+
+
 <?php
+
+
 
                             endif;
 
+
+
                         } catch (Exception $e) {
 
+
+
                         }
+
+
 
                     endif; ?>
 
@@ -1418,7 +2832,15 @@ elseif ($WPME_API->http->getResponseCode() == 200):
 
 
 
+
+
+
+
+
+
  <?php
+
+
 
         endif; ?>
 
@@ -1432,9 +2854,27 @@ elseif ($WPME_API->http->getResponseCode() == 200):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     <?php
 
+
+
     },
+
+
+
+
 
 
 
@@ -1442,9 +2882,19 @@ elseif ($WPME_API->http->getResponseCode() == 200):
 
 
 
+
+
+
+
     2
 
+
+
 );
+
+
+
+
 
 
 
@@ -1452,9 +2902,19 @@ elseif ($WPME_API->http->getResponseCode() == 200):
 
 
 
+
+
+
+
 add_action("gform_editor_js", function () {
 
+
+
     //standard, advanced,post,price field types without premapped fields
+
+
+
+
 
 
 
@@ -1462,13 +2922,27 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
     if (method_exists($WPME_API, "callCustom")):
+
+
 
         try {
 
+
+
             $leadtypes_optional = $WPME_API->callCustom(
 
+
+
                 "/leadtypes",
+
+
+
+
 
 
 
@@ -1476,9 +2950,19 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
                 null
 
+
+
             );
+
+
+
+
 
 
 
@@ -1486,7 +2970,13 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
             if ($WPME_API->http->getResponseCode() == 204):
+
+
 
                 // No leadfields based on folderdid onchange! Ooops
 
@@ -1494,23 +2984,49 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
+
+
             elseif ($WPME_API->http->getResponseCode() == 200):
+
+
 
             endif;
 
+
+
         } catch (Exception $e) {
+
+
 
             //To DO
 
+
+
         }
+
+
 
     endif;
 
 
 
+
+
+
+
     $all_default_types = [
 
+
+
         "text",
+
+
+
+
 
 
 
@@ -1518,7 +3034,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "multiselect",
+
+
+
+
 
 
 
@@ -1526,7 +3050,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "number",
+
+
+
+
 
 
 
@@ -1534,7 +3066,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "fileupload",
+
+
+
+
 
 
 
@@ -1542,7 +3082,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "product",
+
+
+
+
 
 
 
@@ -1550,7 +3098,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "creditcard",
+
+
+
+
 
 
 
@@ -1558,7 +3114,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "html",
+
+
+
+
 
 
 
@@ -1566,7 +3130,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "page",
+
+
+
+
 
 
 
@@ -1574,7 +3146,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "radio",
+
+
+
+
 
 
 
@@ -1582,7 +3162,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "post_image",
+
+
+
+
 
 
 
@@ -1590,7 +3178,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "post_excerpt",
+
+
+
+
 
 
 
@@ -1598,7 +3194,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "option",
+
+
+
+
 
 
 
@@ -1606,7 +3210,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "shipping",
+
+
+
+
 
 
 
@@ -1614,7 +3226,15 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "date",
+
+
+
+
 
 
 
@@ -1622,13 +3242,27 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
         "hidden",
+
+
 
     ];
 
 
 
+
+
+
+
     foreach ($all_default_types as $default_type): ?>
+
+
+
+
 
 
 
@@ -1638,33 +3272,69 @@ add_action("gform_editor_js", function () {
 
 
 
+
+
+
+
+
+
     var type = '<?php echo $default_type; ?>';
+
+
+
+
 
 
 
     fieldSettings[type] += ', .thirdparty_input_setting';
 
+
+
     fieldSettings[type] += ', .encrypt_setting_leadtypes';
+
+
 
    // Make sure our field gets populated with its saved value
 
 
 
+
+
+
+
 jQuery(document).on("gform_load_field_settings", function(event, field, form) {
+
+
 
 var leadtypescount = '<?php echo $count; ?>';
 
+
+
 var third_party_value = field['thirdPartyInput'];
+
+
 
 jQuery("#field_thirdparty_input").val(field["thirdPartyInput"]);
 
+
+
 for (i = 0; i < leadtypescount; i++) {
+
+
 
 jQuery("#field_encrypt_value"+i).prop( 'checked', ( rgar( field, 'encryptField'+i )) );
 
+
+
   }
 
+
+
  if(third_party_value!='leadtypes')
+
+
+
+
 
 
 
@@ -1674,13 +3344,29 @@ jQuery("#field_encrypt_value"+i).prop( 'checked', ( rgar( field, 'encryptField'+
 
 
 
+
+
+
+
+
+
   jQuery('.leadtypecheckbox').css('display','none');   
+
+
 
   jQuery('.leadtypeselected').css('display','none');   
 
 
 
+
+
+
+
  }
+
+
+
+
 
 
 
@@ -1688,7 +3374,15 @@ jQuery("#field_encrypt_value"+i).prop( 'checked', ( rgar( field, 'encryptField'+
 
 
 
+
+
+
+
 //binding to the load field settings event to initialize the checkbox
+
+
+
+
 
 
 
@@ -1696,9 +3390,19 @@ jQuery("#field_encrypt_value"+i).prop( 'checked', ( rgar( field, 'encryptField'+
 
 
 
+
+
+
+
  <?php endforeach;
 
+
+
 });
+
+
+
+
 
 
 
@@ -1706,21 +3410,43 @@ add_action("plugins_loaded", "myplugin_update_db_check");
 
 
 
+
+
+
+
 function myplugin_update_db_check()
 
+
+
 {
+
+
 
     $option_value = get_option("plugin_file_updated");
 
 
 
+
+
+
+
     if ($option_value == "yes") {
+
+
 
         add_action("admin_notices", "sample_admin_notice__success");
 
+
+
     }
 
+
+
 }
+
+
+
+
 
 
 
@@ -1728,11 +3454,23 @@ add_action("gform_after_save_form", "after_save_form", 10, 2);
 
 
 
+
+
+
+
 function after_save_form($form, $is_new)
+
+
 
 {
 
+
+
     global $wpdb, $WPME_API;
+
+
+
+
 
 
 
@@ -1740,15 +3478,31 @@ function after_save_form($form, $is_new)
 
 
 
+
+
+
+
     $gf_save_form_id = $wpdb->prefix . "postmeta";
+
+
+
+
 
 
 
     $get_form_name = $wpdb->get_row(
 
+
+
         "SELECT * from $gf_form_table WHERE `id` = " . $form["id"] . ""
 
+
+
     );
+
+
+
+
 
 
 
@@ -1756,13 +3510,27 @@ function after_save_form($form, $is_new)
 
 
 
+
+
+
+
     $values = [];
+
+
+
+
 
 
 
     if ($is_new) {
 
+
+
         $values["form_name"] = $get_form_name->title;
+
+
+
+
 
 
 
@@ -1770,11 +3538,23 @@ function after_save_form($form, $is_new)
 
 
 
+
+
+
+
         $values["form_type"] = "GF";
+
+
 
     } else {
 
+
+
         $values["form_name"] = $get_form_name->title;
+
+
+
+
 
 
 
@@ -1782,9 +3562,19 @@ function after_save_form($form, $is_new)
 
 
 
+
+
+
+
         $values["form_type"] = "GF";
 
+
+
     }
+
+
+
+
 
 
 
@@ -1792,13 +3582,27 @@ function after_save_form($form, $is_new)
 
 
 
+
+
+
+
     if (method_exists($WPME_API, "callCustom")):
+
+
 
         try {
 
+
+
             $response = $WPME_API->callCustom(
 
+
+
                 "/saveExternalForm",
+
+
+
+
 
 
 
@@ -1806,13 +3610,25 @@ function after_save_form($form, $is_new)
 
 
 
+
+
+
+
                 $values
+
+
 
             );
 
 
 
+
+
+
+
             if ($WPME_API->http->getResponseCode() == 204):
+
+
 
                 // No values based on form name,form id onchange! Ooops
 
@@ -1820,29 +3636,61 @@ function after_save_form($form, $is_new)
 
 
 
+
+
+
+
+
+
             elseif ($WPME_API->http->getResponseCode() == 200):
+
+
 
                 if ($genoo_form_id == $response->genoo_form_id):
 
+
+
                     update_post_meta(
 
+
+
                         $form["id"],
 
 
 
+
+
+
+
                         $form["id"],
+
+
+
+
 
 
 
                         $response->genoo_form_id
 
+
+
                     );
+
+
+
+
 
 
 
                     update_post_meta(
 
+
+
                         $form["id"],
+
+
+
+
 
 
 
@@ -1850,31 +3698,63 @@ function after_save_form($form, $is_new)
 
 
 
+
+
+
+
                         $get_form_name->title
 
+
+
                     );
+
+
 
                 else:
 
+
+
                     add_post_meta(
 
+
+
                         $form["id"],
 
 
 
+
+
+
+
                         $form["id"],
+
+
+
+
 
 
 
                         $response->genoo_form_id
 
+
+
                     );
+
+
+
+
 
 
 
                     add_post_meta(
 
+
+
                         $form["id"],
+
+
+
+
 
 
 
@@ -1882,15 +3762,29 @@ function after_save_form($form, $is_new)
 
 
 
+
+
+
+
                         $get_form_name->title
+
+
 
                     );
 
+
+
                 endif;
+
+
 
             endif;
 
+
+
         } catch (Exception $e) {
+
+
 
             if ($WPME_API->http->getResponseCode() == 404):
 
@@ -1898,37 +3792,77 @@ function after_save_form($form, $is_new)
 
 
 
+
+
+
+
+
+
                 // Looks like formname or form id not found
+
+
 
             endif;
 
+
+
         }
 
+
+
     endif;
+
+
 
 }
 
 
 
+
+
+
+
 add_filter(
+
+
 
     "gform_field_choice_markup_pre_render",
 
 
 
+
+
+
+
     function ($choice_markup, $choice) {
+
+
 
         if (rgar($choice, "value") == "First Choice") {
 
+
+
             return "";
+
+
 
         }
 
 
 
+
+
+
+
         return $choice_markup;
 
+
+
     },
+
+
+
+
 
 
 
@@ -1936,9 +3870,19 @@ add_filter(
 
 
 
+
+
+
+
     2
 
+
+
 );
+
+
+
+
 
 
 
@@ -1946,7 +3890,15 @@ add_filter("gform_pre_render", "populate_dropdown");
 
 
 
+
+
+
+
 add_filter("gform_pre_validation", "populate_dropdown");
+
+
+
+
 
 
 
@@ -1954,15 +3906,31 @@ add_filter("gform_pre_submission_filter", "populate_dropdown");
 
 
 
+
+
+
+
 add_filter("gform_admin_pre_render", "populate_dropdown");
+
+
+
+
 
 
 
 function populate_dropdown($form)
 
+
+
 {
 
+
+
     global $WPME_API, $wpdb;
+
+
+
+
 
 
 
@@ -1970,7 +3938,15 @@ function populate_dropdown($form)
 
 
 
+
+
+
+
     $leadtype_form_save = $wpdb->prefix . "leadtype_form_save";
+
+
+
+
 
 
 
@@ -1978,13 +3954,27 @@ function populate_dropdown($form)
 
 
 
+
+
+
+
     $leaddetailsoptions = false;
+
+
+
+
 
 
 
     foreach ($form["fields"] as $field) {
 
+
+
         $i = 0;
+
+
+
+
 
 
 
@@ -1992,67 +3982,135 @@ function populate_dropdown($form)
 
 
 
+
+
+
+
         $choices[] = ["text" => "Select a leadtype", "value" => ""];
+
+
+
+
 
 
 
         $leadTypes = $wpdb->get_results(
 
+
+
             "select `label_name`,`label_value` from $leadtype_form_save where field_id=$field->id and form_id=$field->formId"
+
+
 
         );
 
 
 
+
+
+
+
         foreach ($leadTypes as $leadType) {
 
+
+
             $choices[] = [
+
+
 
                 "text" => $leadType->label_name,
 
 
 
+
+
+
+
                 "value" => $leadType->label_value,
+
+
 
             ];
 
 
 
+
+
+
+
             $i++;
 
+
+
         }
+
+
+
+
 
 
 
         if ($field->thirdPartyInput == "leadtypes") {
 
+
+
             $leaddetailsoptions = true;
+
+
 
         } else {
 
+
+
             $leaddetailsoptions = false;
+
+
 
         }
 
+
+
     }
+
+
+
+
 
 
 
     if ($leaddetailsoptions) {
 
+
+
         $field["choices"] = $choices;
+
+
+
+
 
 
 
         //  $field["inputs"] = $inputs;
 
+
+
     }
+
+
+
+
 
 
 
     return $form;
 
+
+
 }
+
+
+
+
 
 
 
@@ -2060,15 +4118,31 @@ function populate_dropdown($form)
 
 
 
+
+
+
+
 add_action("gform_before_delete_form", "log_form_deleted");
+
+
+
+
 
 
 
 function log_form_deleted($form_id)
 
+
+
 {
 
+
+
     global $wpdb, $WPME_API;
+
+
+
+
 
 
 
@@ -2076,7 +4150,15 @@ function log_form_deleted($form_id)
 
 
 
+
+
+
+
     $form_genoo_title = get_post_meta($form_id, "form_title", true);
+
+
+
+
 
 
 
@@ -2084,7 +4166,15 @@ function log_form_deleted($form_id)
 
 
 
+
+
+
+
     $values["form_name"] = $form_genoo_title;
+
+
+
+
 
 
 
@@ -2092,13 +4182,27 @@ function log_form_deleted($form_id)
 
 
 
+
+
+
+
     if (method_exists($WPME_API, "callCustom")):
+
+
 
         try {
 
+
+
             $response = $WPME_API->callCustom(
 
+
+
                 "/deleteGravityForm",
+
+
+
+
 
 
 
@@ -2106,13 +4210,25 @@ function log_form_deleted($form_id)
 
 
 
+
+
+
+
                 $values
+
+
 
             );
 
 
 
+
+
+
+
             if ($WPME_API->http->getResponseCode() == 204):
+
+
 
                 // No values based on form name,form id onchange! Ooops
 
@@ -2120,23 +4236,49 @@ function log_form_deleted($form_id)
 
 
 
+
+
+
+
+
+
             elseif ($WPME_API->http->getResponseCode() == 200):
+
+
 
                 $delete = delete_post_meta($form_id, "form_title", true);
 
 
 
+
+
+
+
                 $deleteid = delete_post_meta($form_id, $form_id, true);
+
+
 
             endif;
 
+
+
         } catch (Exception $e) {
+
+
 
         }
 
+
+
     endif;
 
+
+
 }
+
+
+
+
 
 
 
@@ -2144,15 +4286,31 @@ add_action("admin_enqueue_scripts", "adminEnqueueScripts", 10, 1);
 
 
 
+
+
+
+
 add_action("wp_ajax_lead_type_option_submit", "lead_type_option_submit");
+
+
+
+
 
 
 
 function lead_type_option_submit()
 
+
+
 {
 
+
+
     global $wpdb;
+
+
+
+
 
 
 
@@ -2160,7 +4318,15 @@ function lead_type_option_submit()
 
 
 
+
+
+
+
     $leadtype_save_values = $_REQUEST["inservalues"];
+
+
+
+
 
 
 
@@ -2168,35 +4334,71 @@ function lead_type_option_submit()
 
 
 
+
+
+
+
     $form_id = $_REQUEST["form_id"];
+
+
+
+
 
 
 
     foreach ($leadtype_save_values as $leadtype_save_value) {
 
+
+
         $wpdb->delete($leadtype_form_save, [
+
+
 
             "form_id" => $form_id,
 
 
 
+
+
+
+
             "field_id" => $field_id,
+
+
+
+
 
 
 
             "label_value" => $leadtype_save_value["labelvalue"],
 
+
+
         ]);
+
+
+
+
 
 
 
         $wpdb->insert($leadtype_form_save, [
 
+
+
             "form_id" => $form_id,
 
 
 
+
+
+
+
             "field_id" => $field_id,
+
+
+
+
 
 
 
@@ -2204,27 +4406,55 @@ function lead_type_option_submit()
 
 
 
+
+
+
+
             "label_value" => $leadtype_save_value["labelvalue"],
+
+
 
         ]);
 
+
+
     }
+
+
 
 }
 
 
 
+
+
+
+
 function adminEnqueueScripts($hook)
 
+
+
 {
+
+
 
     // scripts
 
 
 
+
+
+
+
     wp_enqueue_script(
 
+
+
         "my_custom_script",
+
+
+
+
 
 
 
@@ -2232,19 +4462,39 @@ function adminEnqueueScripts($hook)
 
 
 
+
+
+
+
         [],
+
+
+
+
 
 
 
         "1.0"
 
+
+
     );
+
+
+
+
 
 
 
     wp_enqueue_style(
 
+
+
         "my_custom_style",
+
+
+
+
 
 
 
@@ -2252,15 +4502,31 @@ function adminEnqueueScripts($hook)
 
 
 
+
+
+
+
         [],
+
+
+
+
 
 
 
         "1.0"
 
+
+
     );
 
+
+
 }
+
+
+
+
 
 
 
@@ -2268,19 +4534,39 @@ add_action("wp_head", "myplugin_ajaxurl");
 
 
 
+
+
+
+
 function myplugin_ajaxurl()
+
+
 
 {
 
+
+
     echo '<script type="text/javascript">
+
+
 
 var ajaxurl = "' .admin_url("admin-ajax.php") .'";
 
 
 
+
+
+
+
 </script>';
 
+
+
 }
+
+
+
+
 
 
 
@@ -2288,47 +4574,93 @@ var ajaxurl = "' .admin_url("admin-ajax.php") .'";
 
 
 
+
+
+
+
 /**
+
+
 
  * This function runs when WordPress completes its upgrade process
 
+
+
  * It iterates through each plugin updated to see if ours is included
+
+
 
  * @param $upgrader_object Array
 
+
+
  * @param $options Array
+
+
 
  */
 
+
+
 function wp_upe_upgrade_completed( $upgrader_object, $options ) {
+
+
 
  // The path to our plugin's main file
 
+
+
  $our_plugin = plugin_basename( __FILE__ );
+
+
 
  // If an update has taken place and the updated type is plugins and the plugins element exists
 
+
+
  if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
+
+
 
   // Iterate through the plugins being updated and check if ours is there
 
+
+
   foreach( $options['plugins'] as $plugin ) {
+
+
 
    if( $plugin == $our_plugin ) {
 
+
+
     // Your action if it is your plugin
+
+
 
     update_option("plugin_file_updated", "yes");
 
 
 
+
+
+
+
    }
+
+
 
   }
 
+
+
  }
 
+
+
 }
+
+
 
 add_action( 'upgrader_process_complete', 'wp_upe_upgrade_completed', 10, 2 );
 
@@ -2338,9 +4670,21 @@ add_action( 'upgrader_process_complete', 'wp_upe_upgrade_completed', 10, 2 );
 
 
 
+
+
+
+
+
+
+
+
 function sample_admin_notice__success()
 
+
+
 {
+
+
 
   //  delete_option("plugin_file_updated");
 
@@ -2350,52 +4694,79 @@ function sample_admin_notice__success()
 
 
 
+<div class="notice notice-success is-dismissible woo-extension-notification">
+    <p>
+        <span class="action-button-area">
+            <a class="clickoption button button-primary">click Here</a>
+        </span>
+        <span><b>Woocommerce WPMktgEngine | Genoo Extension: </b> Update the woocommerce extension Activity stream Types</span>
+    </p>
+    <button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>
+</div>
 
 
-    <div class="notice notice-success is-dismissible">
-
-        <p><span class="action-button-area"><a class="clickoption button button-primary">click Here</a></span><span>Update the woocommerce extension Activity stream Types</span></p>
-        <button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>
-
-    </div>
 
     <?php
 
+
+
 }
+
+
 
 //add_action( 'admin_notices', 'sample_admin_notice__success' );
 
 
 
-       
-
-
+// Add inline CSS in the admin head with the style tag
 
 
 
 // Add inline CSS in the admin head with the style tag
 
-// Add inline CSS in the admin head with the style tag
+
 
 add_action('wp_ajax_activity_stream_types','activity_stream_types');
+
+
 
 add_action('wp_ajax_delete_plugin_options','delete_plugin_options');
 
 
 
+
+
+
+
 function activity_stream_types()
+
+
 
 {
 
+
+
     if (
+
+
 
         class_exists("\WPME\ApiFactory") &&
 
+
+
         class_exists("\WPME\RepositorySettingsFactory")
+
+
 
     ) {
 
+
+
         $activate = true;
+
+
+
+
 
 
 
@@ -2403,25 +4774,51 @@ function activity_stream_types()
 
 
 
+
+
+
+
         $api = new \WPME\ApiFactory($repo);
+
+
+
+
 
 
 
         if (class_exists("\Genoo\Api")) {
 
+
+
             $isGenoo = true;
+
+
 
         }
 
+
+
     } elseif (
+
+
 
         class_exists("\Genoo\Api") &&
 
+
+
         class_exists("\Genoo\RepositorySettings")
+
+
 
     ) {
 
+
+
         $activate = true;
+
+
+
+
 
 
 
@@ -2429,21 +4826,43 @@ function activity_stream_types()
 
 
 
+
+
+
+
         $api = new \Genoo\Api($repo);
+
+
+
+
 
 
 
         $isGenoo = true;
 
+
+
     } elseif (
+
+
 
         class_exists("\WPMKTENGINE\Api") &&
 
+
+
         class_exists("\WPMKTENGINE\RepositorySettings")
+
+
 
     ) {
 
+
+
         $activate = true;
+
+
+
+
 
 
 
@@ -2451,252 +4870,511 @@ function activity_stream_types()
 
 
 
+
+
+
+
         $api = new \WPMKTENGINE\Api($repo);
 
+
+
     }
+
+
 
     try {
 
+
+
         $api->setStreamTypes(array(
 
+
+
             array(
+
+
 
                 'name' => 'viewed test1',
 
+
+
                 'description' => ''
 
+
+
             ) ,
+
+
 
             array(
 
+
+
                 'name' => 'added test data',
+
+
 
                 'description' => ''
 
+
+
             ) ,
+
+
 
           
 
+
+
         ));
+
+
 
     } catch (\Exception $e) {
 
+
+
         // Decide later Sub Renewal Failed
+
+
 
     }
 
+
+
 }
+
+
 
 function delete_plugin_options()
 
+
+
 {
+
+
 
     delete_option('plugin_file_updated');
 
+
+
 }
+
+
+
+
 
 
 
 add_action(
 
+
+
     'admin_head',
+
+
 
     function () { ?>
 
+
+
     <style>
 
+
+
 .notice.notice-success.is-dismissible.woo-extension-notification {
-    border-left: solid 1px #cacaca;
-    padding-left: 0;
-    min-height: 54px;
-}
-.woo-extension-notification p {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
-.woo-extension-notification .action-button-area {
-    float: left;
-    width: 118px;
-    height: 50px;
-    border-right: solid 3px #46b450;
-    background-color: #f1f1f1;
-    padding: 10px;
-}
-.woo-extension-notification p {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
-.woo-extension-notification .action-button-area .clickoption.button {
-    width: 95px;
-    text-align: center;
-    line-height: 24px;
+
+    border-left: solid 1px #cacaca !important;
+
+    padding-left: 0 !important;;
+
+    min-height: 54px !important;;
+
 }
 
-        .wpme-upgrader-custom-notice .notice-right {
+.woo-extension-notification p {
+
+    width: 100% !important; 
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+}
+
+.woo-extension-notification .action-button-area {
+
+    float: left !important;;
+
+    width: 118px !important;;
+
+    height: 50px !important;;
+
+    border-right: solid 3px #46b450 !important;;
+
+    background-color: #f1f1f1 !important;;
+
+    padding: 10px !important;;
+
+}
+
+.woo-extension-notification p {
+
+    width: 100%;
+
+    margin: 0;
+
+    padding: 0;
+
+}
+.woo-extension-notification p span:last-child {
+display:flex;
+align-items: center;
+padding-left: 10px;
+float: left;
+width: calc(100% - 120px);
+height: 46px;
+}
+
+.woo-extension-notification .action-button-area .clickoption.button {
+
+    width: 95px;
+
+    text-align: center;
+
+    line-height: 24px;
+
+}
+
+  .wpme-upgrader-custom-notice .notice-right {
+
+
 
             display: table-cell; 
 
+
+
             padding: 10px; 
+
+
 
             background: #f1f1f1;
 
+
+
             margin-right: 5px; 
+
+
 
             border-right: 3px solid #46b450;
 
+
+
             border-left: 1px solid #dadada; 
+
+
 
             border-bottom: 1px solid #dadada;
 
+
+
             border-top: 1px solid #dadada; 
+
+
 
             vertical-align: middle;
 
+
+
             position: relative;
+
+
 
             width: 110px;
 
+
+
            }
+
+
 
            .wpme-upgrader-custom-notice .notice-left {
 
+
+
                display: table-cell;
+
+
 
                padding: 10px;
 
+
+
            }
+
+
 
            .wpme-upgrader-custom-notice
 
+
+
            {
+
+
 
             min-width: 100%;
 
+
+
             width: 100%;
+
+
 
             box-sizing: border-box;
 
+
+
             background: #fff;
+
+
 
             border: 1px solid #c3c4c7;
 
+
+
             border-left-width: 4px;
+
+
 
             box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
 
+
+
             margin: 5px 15px 2px;
+
+
 
             padding: 1px 12px;
 
+
+
             position: relative;
+
+
 
             padding-left: 0;
 
+
+
             border-left: 0;
+
+
 
             display: table;
 
+
+
            }
+
+
 
            </style>
 
+
+
            <script>
+
+
 
                   var ajaxurl = '<?php echo admin_url("admin-ajax.php") ?>';
 
+
+
                jQuery(document).on("click", ".clickoption", function () {   
+
+
 
                 
 
+
+
                jQuery.ajax({
+
+
 
                 url: ajaxurl,
 
+
+
                 type: "POST",
+
+
 
                 cache: false,
 
+
+
                 data: {
+
+
 
                     action: "activity_stream_types",
 
+
+
                    
 
+
+
                 },
+
+
 
                 success: function () {
 
+
+
                 jQuery.ajax({
+
+
 
                 url: ajaxurl,
 
+
+
                 type: "POST",
+
+
 
                 cache: false,
 
+
+
                 data: {
+
+
 
                     action: "delete_plugin_options",
 
+
+
                    
 
+
+
                 },
+
+
 
                 success: function (data) {
 
 
 
+
+
+
+
                  location.reload();
 
+
+
                     
 
+
+
                 },
+
+
+
+
 
 
 
                 error: function (errorThrown) {
 
+
+
                     console.log(errorThrown);
 
+
+
                 },
+
+
 
                 });
 
+
+
                     
 
+
+
                 },
+
+
+
+
 
 
 
                 error: function (errorThrown) {
 
+
+
                     console.log(errorThrown);
+
+
 
                 },
 
+
+
                 });
+
+
 
                  });
+
+
 
                  
 
 
 
+
+
+
+
            </script>
+
+
 
            <?php
 
+
+
     },
 
+
+
     1
+
+
 
 );
 
 
 
+
+
+
+
 require_once "includes/api-functions.php";
+
+
+
+
 
 
 
