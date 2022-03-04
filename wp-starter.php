@@ -1174,68 +1174,18 @@ function sample_admin_notice__success()
 
   ?>
 
-            <div class='wpme-upgrader-custom-notice plugin-card-gravity-form-extention'>
 
-                <div class='notice-right'>
-
-                   <a  class='install-now button button-primary clickoption'>Click Here!</a>
-
-                </div>
-
-                <div class='notice-left'><p>Update the woocommerce extension activity stream types</p></div>
-
-                <div class='clear cls cf'></div>
-
-            </div>
+    <div class="notice notice-success is-dismissible">
+        <p><a class="clickoption button button-primary">click Here</a><span>Update the woocommerce extension Activity stream Types</span></p>
+    </div>
+    <?php
+}
+//add_action( 'admin_notices', 'sample_admin_notice__success' );
 
        
-<?php }
 
-// Add inline CSS in the admin head with the style tag
-// Add inline CSS in the admin head with the style tag
 
-add_action(
-    'admin_head',
-    function () { ?>
-    <style>
-        .wpme-upgrader-custom-notice .notice-right {
-            display: table-cell; 
-            padding: 10px; 
-            background: #f1f1f1;
-            margin-right: 5px; 
-            border-right: 3px solid #46b450;
-            border-left: 1px solid #dadada; 
-            border-bottom: 1px solid #dadada;
-            border-top: 1px solid #dadada; 
-            vertical-align: middle;
-            position: relative;
-            width: 110px;
-           }
-           .wpme-upgrader-custom-notice .notice-left {
-               display: table-cell;
-               padding: 10px;
-           }
-           .wpme-upgrader-custom-notice
-           {
-            min-width: 100%;
-            width: 100%;
-            box-sizing: border-box;
-            background: #fff;
-            border: 1px solid #c3c4c7;
-            border-left-width: 4px;
-            box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
-            margin: 5px 15px 2px;
-            padding: 1px 12px;
-            position: relative;
-            padding-left: 0;
-            border-left: 0;
-            display: table;
-           }
-           </style>
-           <?php
-    },
-    1
-);
+
 
 require_once "includes/api-functions.php";
 
