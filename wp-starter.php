@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.88
+Version: 2.2.90
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -1185,7 +1185,152 @@ function sample_admin_notice__success()
        
 
 
+// Add inline CSS in the admin head with the style tag
+// Add inline CSS in the admin head with the style tag
+add_action('wp_ajax_activity_stream_types','activity_stream_types');
+add_action('wp_ajax_delete_plugin_options','delete_plugin_options');
 
+function activity_stream_types()
+{
+    if (
+        class_exists("\WPME\ApiFactory") &&
+        class_exists("\WPME\RepositorySettingsFactory")
+    ) {
+        $activate = true;
+
+        $repo = new \WPME\RepositorySettingsFactory();
+
+        $api = new \WPME\ApiFactory($repo);
+
+        if (class_exists("\Genoo\Api")) {
+            $isGenoo = true;
+        }
+    } elseif (
+        class_exists("\Genoo\Api") &&
+        class_exists("\Genoo\RepositorySettings")
+    ) {
+        $activate = true;
+
+        $repo = new \Genoo\RepositorySettings();
+
+        $api = new \Genoo\Api($repo);
+
+        $isGenoo = true;
+    } elseif (
+        class_exists("\WPMKTENGINE\Api") &&
+        class_exists("\WPMKTENGINE\RepositorySettings")
+    ) {
+        $activate = true;
+
+        $repo = new \WPMKTENGINE\RepositorySettings();
+
+        $api = new \WPMKTENGINE\Api($repo);
+    }
+    try {
+        $api->setStreamTypes(array(
+            array(
+                'name' => 'viewed test1',
+                'description' => ''
+            ) ,
+            array(
+                'name' => 'added test',
+                'description' => ''
+            ) ,
+          
+        ));
+    } catch (\Exception $e) {
+        // Decide later Sub Renewal Failed
+    }
+}
+function delete_plugin_options()
+{
+    delete_option('plugin_file_updated');
+}
+
+add_action(
+    'admin_head',
+    function () { ?>
+    <style>
+        .wpme-upgrader-custom-notice .notice-right {
+            display: table-cell; 
+            padding: 10px; 
+            background: #f1f1f1;
+            margin-right: 5px; 
+            border-right: 3px solid #46b450;
+            border-left: 1px solid #dadada; 
+            border-bottom: 1px solid #dadada;
+            border-top: 1px solid #dadada; 
+            vertical-align: middle;
+            position: relative;
+            width: 110px;
+           }
+           .wpme-upgrader-custom-notice .notice-left {
+               display: table-cell;
+               padding: 10px;
+           }
+           .wpme-upgrader-custom-notice
+           {
+            min-width: 100%;
+            width: 100%;
+            box-sizing: border-box;
+            background: #fff;
+            border: 1px solid #c3c4c7;
+            border-left-width: 4px;
+            box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
+            margin: 5px 15px 2px;
+            padding: 1px 12px;
+            position: relative;
+            padding-left: 0;
+            border-left: 0;
+            display: table;
+           }
+           </style>
+           <script>
+                  var ajaxurl = '<?php echo admin_url("admin-ajax.php") ?>';
+               jQuery(document).on("click", ".clickoption", function () {   
+                
+               jQuery.ajax({
+                url: ajaxurl,
+                type: "POST",
+                cache: false,
+                data: {
+                    action: "activity_stream_types",
+                   
+                },
+                success: function () {
+                jQuery.ajax({
+                url: ajaxurl,
+                type: "POST",
+                cache: false,
+                data: {
+                    action: "delete_plugin_options",
+                   
+                },
+                success: function (data) {
+
+                 location.reload();
+                    
+                },
+
+                error: function (errorThrown) {
+                    console.log(errorThrown);
+                },
+                });
+                    
+                },
+
+                error: function (errorThrown) {
+                    console.log(errorThrown);
+                },
+                });
+                 });
+                 
+
+           </script>
+           <?php
+    },
+    1
+);
 
 require_once "includes/api-functions.php";
 
