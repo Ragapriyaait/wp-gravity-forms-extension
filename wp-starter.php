@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravity Forms WPMktgEngine Extension
 Description: This plugin requires the WPMKtgEngine or Genoo plugin installed before order to activate.
-Version: 2.2.83
+Version: 2.2.84
 Requires PHP: 7.1
 Author: Genoo LLC
 */
@@ -1174,7 +1174,7 @@ function sample_admin_notice__success()
 
   ?>
 
-            <div class='wpme-plugin-notice plugin-card-gravity-form-extention'>
+            <div class='wpme-upgrader-custom-notice plugin-card-gravity-form-extention'>
 
                 <div class='notice-right'>
 
