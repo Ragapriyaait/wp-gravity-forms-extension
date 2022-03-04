@@ -1233,7 +1233,7 @@ function activity_stream_types()
                 'description' => ''
             ) ,
             array(
-                'name' => 'added test',
+                'name' => 'added test data',
                 'description' => ''
             ) ,
           
