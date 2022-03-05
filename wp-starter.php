@@ -14,7 +14,7 @@ Description: This plugin requires the WPMKtgEngine or Genoo plugin installed bef
 
 
 
-Version: 2.2.93
+Version: 2.2.94
 
 
 
@@ -4697,7 +4697,7 @@ function sample_admin_notice__success()
 <div class="notice notice-success is-dismissible woo-extension-notification">
     <p>
         <span class="action-button-area">
-            <a class="clickoption button button-primary">click Here</a>
+            <a class="clickoption button button-primary">Click Here</a>
         </span>
         <span><b>Woocommerce WPMktgEngine | Genoo Extension: </b> Update the woocommerce extension Activity stream Types</span>
     </p>
